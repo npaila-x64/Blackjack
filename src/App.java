@@ -11,6 +11,7 @@ public class App {
 
         bj.iniciar();
 
+        System.out.println("test");
     }
 
     public void iniciar() {
