@@ -107,8 +107,7 @@ public class App {
 
     public void mostrarMano(List<String> mano) {
         for (String carta : mano) {
-            String[] cartaArray = carta.split(" ");
-            System.out.println("[" + cartaArray[1] + " DE "
+            System.out.println("[" + obtenerValorLiteralDeCarta(carta) + " DE "
                     + obtenerPintaDeCarta(carta) + "]");
         }
     }
@@ -121,8 +120,7 @@ public class App {
             if (indice == 0) {
                 System.out.println("[***************]");
             } else {
-                String[] cartaArray = carta.split(" ");
-                System.out.println("[" + cartaArray[1] + " DE "
+                System.out.println("[" + obtenerValorLiteralDeCarta(carta) + " DE "
                         + obtenerPintaDeCarta(carta) + "]");
             }
             indice++;
@@ -207,6 +205,11 @@ public class App {
     public int obtenerValorNumericoDeCarta(String carta) {
         String valorDeCarta = carta.split(" ")[1];
         return crearMapaDeValores().get(valorDeCarta);
+    }
+
+    public String obtenerValorLiteralDeCarta(String carta) {
+        String valorDeCarta = carta.split(" ")[1];
+        return valorDeCarta;
     }
 
     public String obtenerPintaDeCarta(String carta) {
