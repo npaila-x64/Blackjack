@@ -46,14 +46,7 @@ public class App {
                                                        \\______/                             \s""");
 
         System.out.println("La mano del dealer es: ");
-        for (int i = 0; i < manoDealer.size(); i++) {
-            if (i == 0) {
-                System.out.println("[***************]");
-            } else {
-                String[] carta = manoDealer.get(i).split(" ");
-                System.out.println("[" + carta[1] + " DE " + carta[0] + "]");
-            }
-        }
+        mostrarManoConCartaEscondida(manoDealer);
 
         int puntuacionDealer = obtenerValorDeMano(manoDealer);
         int puntuacionJugador = obtenerValorDeMano(manoJugador);
@@ -106,6 +99,22 @@ public class App {
             String[] cartaArray = carta.split(" ");
             System.out.println("[" + cartaArray[1] + " DE "
                     + obtenerPintaDeCarta(carta) + "]");
+        }
+    }
+
+    public void mostrarManoConCartaEscondida(List<String> mano) {
+
+        int indice = 0;
+
+        for (String carta : mano) {
+            if (indice == 0) {
+                System.out.println("[***************]");
+            } else {
+                String[] cartaArray = carta.split(" ");
+                System.out.println("[" + cartaArray[1] + " DE "
+                        + obtenerPintaDeCarta(carta) + "]");
+            }
+            indice++;
         }
     }
 
