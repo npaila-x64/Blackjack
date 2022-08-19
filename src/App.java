@@ -104,7 +104,8 @@ public class App {
     public void mostrarMano(List<String> mano) {
         for (String carta : mano) {
             String[] cartaArray = carta.split(" ");
-            System.out.println("[" + cartaArray[1] + " DE " + cartaArray[0] + "]");
+            System.out.println("[" + cartaArray[1] + " DE "
+                    + obtenerPintaDeCarta(carta) + "]");
         }
     }
 
@@ -132,7 +133,7 @@ public class App {
         boolean existe10 = false;
 
         for (String carta : mano) {
-            if (carta.split(" ")[1].equals("AS")) {
+            if (obtenerPintaDeCarta(carta).equals("AS")) {
                 existeAs = true;
             }
             if (obtenerValorDeCarta(carta) == 10) {
@@ -186,6 +187,11 @@ public class App {
     public int obtenerValorDeCarta(String carta) {
         String valorDeCarta = carta.split(" ")[1];
         return crearMapaDeValores().get(valorDeCarta);
+    }
+
+    public String obtenerPintaDeCarta(String carta) {
+        String pintaDeCarta = carta.split(" ")[0];
+        return pintaDeCarta;
     }
 
     public HashMap<String, Integer> crearMapaDeValores() {
