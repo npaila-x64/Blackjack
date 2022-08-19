@@ -8,10 +8,7 @@ public class App {
     public static void main(String[] args) {
 
         App bj = new App();
-
         bj.iniciar();
-
-        System.out.println("test");
     }
 
     public void iniciar() {
@@ -143,11 +140,7 @@ public class App {
     }
 
     public boolean sePasoDe21(List<String> mano) {
-        if (obtenerValorDeMano(mano) > 21) {
-            return true;
-        } else {
-            return false;
-        }
+        return obtenerValorDeMano(mano) > 21;
     }
 
     public List<String> crearBaraja() {
