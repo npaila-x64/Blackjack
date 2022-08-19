@@ -48,23 +48,10 @@ public class App {
         System.out.println("La mano del dealer es: ");
         mostrarManoConCartaEscondida(manoDealer);
 
-        int puntuacionDealer = obtenerValorDeMano(manoDealer);
-        int puntuacionJugador = obtenerValorDeMano(manoJugador);
-
         while (true) {
 
             System.out.println("\nTu mano es: ");
             mostrarMano(manoJugador);
-
-            if (esBlackjack(manoJugador)) {
-                System.out.println("¡¡Ganaste!! :)))");
-                System.exit(0);
-            }
-
-            if (sePasoDe21(manoJugador)) {
-                System.out.println("¡¡Perdiste!! :(((");
-                System.exit(0);
-            }
 
             Scanner scanner = new Scanner(System.in);
             System.out.print("\nEscriba (P) para pedir carta o (B) para bajarse.\n> ");
@@ -87,11 +74,35 @@ public class App {
         System.out.println("\nLa mano del dealer:");
         mostrarMano(manoDealer);
 
+        List<String> manoGanadora = verificarGanador(manoJugador, manoDealer);
 
+        if (manoGanadora == manoJugador) {
+            System.out.println("¡¡Ganaste!! :)))");
+        } else {
+            System.out.println("¡¡Perdiste!! :(((");
+        }
     }
 
     public List<String> verificarGanador(List<String> manoJugador, List<String> manoDealer) {
-        return new ArrayList<>();
+
+        if (esBlackjack(manoJugador)) {
+            return manoJugador;
+        }
+
+        if (esBlackjack(manoDealer)) {
+            return manoDealer;
+        }
+
+        if (sePasoDe21(manoJugador)) {
+            return manoDealer;
+        }
+
+        if (sePasoDe21(manoDealer)) {
+            return manoJugador;
+        }
+
+        return obtenerValorDeMano(manoJugador) > obtenerValorDeMano(manoDealer) ?
+                manoJugador : manoDealer;
     }
 
     public void mostrarMano(List<String> mano) {
