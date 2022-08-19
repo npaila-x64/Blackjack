@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class App {
 
@@ -84,13 +81,20 @@ public class App {
                 pedirCarta(baraja, manoJugador);
             }
             if (seleccion.equals("B")) {
-                bajarse();
+                bajarse(manoJugador, manoDealer);
                 break;
             }
         }
     }
 
-    public void bajarse() {
+    public void bajarse(List<String> manoJugador, List<String> manoDealer) {
+
+        System.out.println("\nTu mano es:");
+        mostrarMano(manoJugador);
+        System.out.println("\nLa mano del dealer:");
+        mostrarMano(manoDealer);
+
+
     }
 
     public List<String> verificarGanador(List<String> manoJugador, List<String> manoDealer) {
@@ -175,42 +179,31 @@ public class App {
         for (String carta : mano) {
             valorTotal += obtenerValorDeCarta(carta);
         }
+
         return valorTotal;
     }
 
     public int obtenerValorDeCarta(String carta) {
+        String valorDeCarta = carta.split(" ")[1];
+        return crearMapaDeValores().get(valorDeCarta);
+    }
 
-        String valor = carta.split(" ")[1];
+    public HashMap<String, Integer> crearMapaDeValores() {
 
-        switch (valor) {
-            case "AS":
-                return 1;
-            case "DOS":
-                return 2;
-            case "TRES":
-                return 3;
-            case "CUATRO":
-                return 4;
-            case "CINCO":
-                return 5;
-            case "SEIS":
-                return 6;
-            case "SIETE":
-                return 7;
-            case "OCHO":
-                return 8;
-            case "NUEVE":
-                return 9;
-            case "DIEZ":
-                return 10;
-            case "JOTA":
-                return 10;
-            case "QUINA":
-                return 10;
-            case "KAISER":
-                return 10;
-            default:
-                return 0;
+        List<String> cartas = List.of("AS", "DOS", "TRES", "CUATRO", "CINCO",
+                "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER");
+
+        HashMap<String, Integer> mapa = new HashMap<>();
+        int valorCarta = 1;
+
+        for (String carta : cartas) {
+            if (valorCarta > 10) {
+                valorCarta = 10;
+            }
+            mapa.put(carta, valorCarta);
+            valorCarta++;
         }
+
+        return mapa;
     }
 }
