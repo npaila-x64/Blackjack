@@ -4,28 +4,20 @@ public class App {
 
     public static void main(String[] args) {
 
-        App bj = new App();
-        bj.iniciar();
+        App blackjack = new App();
+        blackjack.iniciar();
     }
 
     public void iniciar() {
 
         List<String> baraja = crearBaraja();
-
-        System.out.println(baraja);
         barajar(baraja);
-        System.out.println(baraja);
 
         List<String> manoJugador = crearMano();
         List<String> manoDealer = crearMano();
 
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
-
-        System.out.println();
-        System.out.println(baraja);
-        System.out.println(manoJugador);
-        System.out.println(manoDealer);
 
         jugar(baraja, manoJugador, manoDealer);
     }
@@ -45,11 +37,10 @@ public class App {
                                                       |  $$$$$$/                             \s
                                                        \\______/                             \s""");
 
-        System.out.println("La mano del dealer es: ");
-        mostrarManoConCartaEscondida(manoDealer);
-
         while (true) {
 
+            System.out.println("La mano del dealer es: ");
+            mostrarManoConCartaEscondida(manoDealer);
             System.out.println("\nTu mano es: ");
             mostrarMano(manoJugador);
 
@@ -61,18 +52,27 @@ public class App {
                 pedirCarta(baraja, manoJugador);
             }
             if (seleccion.equals("B")) {
+                turnoDeDealer(baraja, manoDealer);
                 bajarse(manoJugador, manoDealer);
                 break;
             }
         }
     }
 
+    public void turnoDeDealer(List<String> baraja, List<String> manoDealer) {
+        if (!esBlackjack(manoDealer)) {
+            while (calcularSumaDeMano(manoDealer) < 17) {
+                pedirCarta(baraja, manoDealer);
+            }
+        }
+    }
+
     public void bajarse(List<String> manoJugador, List<String> manoDealer) {
 
-        System.out.println("\nTu mano es:");
-        mostrarMano(manoJugador);
-        System.out.println("\nLa mano del dealer:");
+        System.out.println("La mano del dealer es: ");
         mostrarMano(manoDealer);
+        System.out.println("\nTu mano es: ");
+        mostrarMano(manoJugador);
 
         List<String> manoGanadora = verificarGanador(manoJugador, manoDealer);
 
