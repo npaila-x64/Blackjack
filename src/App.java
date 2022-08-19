@@ -53,8 +53,8 @@ public class App {
             System.out.println("\nTu mano es: ");
             mostrarMano(manoJugador);
 
-            Scanner scanner = new Scanner(System.in);
             System.out.print("\nEscriba (P) para pedir carta o (B) para bajarse.\n> ");
+            Scanner scanner = new Scanner(System.in);
             String seleccion = scanner.next();
 
             if (seleccion.equals("P")) {
@@ -101,7 +101,7 @@ public class App {
             return manoJugador;
         }
 
-        return obtenerValorDeMano(manoJugador) > obtenerValorDeMano(manoDealer) ?
+        return calcularSumaDeMano(manoJugador) > calcularSumaDeMano(manoDealer) ?
                 manoJugador : manoDealer;
     }
 
@@ -156,7 +156,7 @@ public class App {
             if (obtenerPintaDeCarta(carta).equals("AS")) {
                 existeAs = true;
             }
-            if (obtenerValorDeCarta(carta) == 10) {
+            if (obtenerValorNumericoDeCarta(carta) == 10) {
                 existe10 = true;
             }
         }
@@ -165,7 +165,7 @@ public class App {
     }
 
     public boolean sePasoDe21(List<String> mano) {
-        return obtenerValorDeMano(mano) > 21;
+        return calcularSumaDeMano(mano) > 21;
     }
 
     public List<String> crearBaraja() {
@@ -193,18 +193,18 @@ public class App {
         return mano;
     }
 
-    public int obtenerValorDeMano(List<String> mano) {
+    public int calcularSumaDeMano(List<String> mano) {
 
         int valorTotal = 0;
 
         for (String carta : mano) {
-            valorTotal += obtenerValorDeCarta(carta);
+            valorTotal += obtenerValorNumericoDeCarta(carta);
         }
 
         return valorTotal;
     }
 
-    public int obtenerValorDeCarta(String carta) {
+    public int obtenerValorNumericoDeCarta(String carta) {
         String valorDeCarta = carta.split(" ")[1];
         return crearMapaDeValores().get(valorDeCarta);
     }
