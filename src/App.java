@@ -148,7 +148,7 @@ public class App {
         carta = baraja[0];
         eliminarPrimeraCartaDeBaraja(baraja);
 
-        moverUnaCartaDeMano(mano);
+        moverCartasDeMano(mano);
         mano[0] = carta;
     }
 
@@ -159,7 +159,7 @@ public class App {
         baraja[baraja.length - 1] = null;
     }
 
-    public void moverUnaCartaDeMano(String[] mano) {
+    public void moverCartasDeMano(String[] mano) {
         for (int i = mano.length - 1; i > 0; i--) {
             mano[i] = mano[i - 1];
         }
