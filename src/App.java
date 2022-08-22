@@ -156,6 +156,7 @@ public class App {
         for (int i = 0; i < baraja.length - 1; i++) {
             baraja[i] = baraja[i + 1];
         }
+        baraja[baraja.length - 1] = null;
     }
 
     public void moverUnaCartaDeMano(String[] mano) {
