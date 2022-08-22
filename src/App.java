@@ -219,7 +219,7 @@ public class App {
     }
 
     public String[] crearMano() {
-        String[] mano = new String[26];
+        String[] mano = new String[11];
         return mano;
     }
 
