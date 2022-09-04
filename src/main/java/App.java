@@ -38,25 +38,30 @@ public class App {
         repartir(baraja, manoDealer);
 
         while (true) {
-
-            System.out.println("La mano del dealer es: ");
-            mostrarManoConCartaEscondida(manoDealer);
-            System.out.println("\nTu mano es: ");
-            mostrarMano(manoJugador);
-
+            mostrarManos(manoJugador, manoDealer);
             System.out.print("\nEscriba (P) para pedir carta o (B) para bajarse.\n> ");
-            Scanner scanner = new Scanner(System.in);
-            String seleccion = scanner.next();
-
+            String seleccion = obtenerSeleccion();
             if (seleccion.equals("P")) {
                 pedirCarta(baraja, manoJugador);
             }
             if (seleccion.equals("B")) {
-                turnoDeDealer(baraja, manoDealer);
-                bajarse(manoJugador, manoDealer);
+                bajarse(baraja, manoJugador, manoDealer);
                 break;
             }
         }
+    }
+
+    private String obtenerSeleccion() {
+        Scanner scanner = new Scanner(System.in);
+        String seleccion = scanner.next();
+        return seleccion;
+    }
+
+    private void mostrarManos(String[] manoJugador, String[] manoDealer) {
+        System.out.println("La mano del dealer es: ");
+        mostrarManoConCartaEscondida(manoDealer);
+        System.out.println("\nTu mano es: ");
+        mostrarMano(manoJugador);
     }
 
     public void turnoDeDealer(String[] baraja, String[] manoDealer) {
@@ -71,7 +76,10 @@ public class App {
         }
     }
 
-    public void bajarse(String[] manoJugador, String[] manoDealer) {
+    public void bajarse(String[] baraja, String[] manoJugador, String[] manoDealer) {
+
+        // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
+        turnoDeDealer(baraja, manoDealer);
 
         System.out.println("La mano del dealer es: ");
         mostrarMano(manoDealer);
@@ -142,7 +150,7 @@ public class App {
         pedirCarta(baraja, mano);
     }
 
-    public void pedirCarta(String[] baraja, String[] mano) {
+    public String[] pedirCarta(String[] baraja, String[] mano) {
 
         String carta;
         carta = baraja[0];
@@ -150,6 +158,8 @@ public class App {
 
         moverCartasDeMano(mano);
         mano[0] = carta;
+
+        return mano;
     }
 
     public void eliminarPrimeraCartaDeBaraja(String[] baraja) {
