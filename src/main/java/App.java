@@ -30,10 +30,8 @@ public class App {
                                                        /$$  | $$                             \s
                                                       |  $$$$$$/                             \s
                                                        \\______/                             \s""");
-
         String[] manoJugador = crearMano();
         String[] manoDealer = crearMano();
-
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
 
@@ -177,23 +175,37 @@ public class App {
 
     public boolean esBlackjack(String[] mano) {
 
-        if (mano.length > 2) {
+        if (contarCartasEnMano(mano) == 0 || contarCartasEnMano(mano) > 2) {
             return false;
         }
 
         boolean existeAs = false;
         boolean existe10 = false;
 
-        for (String carta : mano) {
-            if (obtenerPintaDeCarta(carta).equals("AS")) {
+        for (int i = 0; i < 2; i++) {
+            if (obtenerValorNumericoDeCarta(mano[i]) == 1) {
                 existeAs = true;
             }
-            if (obtenerValorNumericoDeCarta(carta) == 10) {
+            if (obtenerValorNumericoDeCarta(mano[i]) == 10) {
                 existe10 = true;
             }
         }
 
         return (existeAs && existe10);
+    }
+
+    public int contarCartasEnMano(String[] mano) {
+
+        int cartas = 0;
+
+        for (String carta : mano) {
+            if (carta == null) {
+                break;
+            }
+            cartas++;
+        }
+
+        return cartas;
     }
 
     public boolean sePasoDe21(String[] mano) {
@@ -271,9 +283,7 @@ public class App {
         int valorCarta = 1;
 
         for (String carta : cartas) {
-            if (valorCarta > 10) {
-                valorCarta = 10;
-            }
+            if (valorCarta > 10) { valorCarta = 10; }
             mapa.put(carta, valorCarta);
             valorCarta++;
         }
