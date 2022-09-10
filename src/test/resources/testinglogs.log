@@ -1,0 +1,4 @@
+2022/09/10 13:13:39 [INFO]Se ha lanzado la excepción IndexOutOfBoundsException, dado que la baraja estaba vacía cuando se le pidío una carta. Index 0 out of bounds for length 0
+2022/09/10 13:13:39 [INFO]Se ha lanzado la excepción NullPointerException, dado que la carta dada es inválida. Cannot invoke "java.lang.Integer.intValue()" because the return value of "java.util.HashMap.get(Object)" is null
+2022/09/10 13:13:39 [INFO]Se ha lanzado la excepción NullPointerException, dado que la mano del jugador estaba nulo. Cannot invoke "String.split(String)" because "carta" is null
+2022/09/10 13:13:39 [INFO]Se ha lanzado la excepción NoSuchElementException, dado que la opción dada es inválida. null

@@ -37,22 +37,28 @@ public class App {
 
         while (true) {
             mostrarManos(manoJugador, manoDealer);
-            System.out.print("\nEscriba (P) para pedir carta o (B) para bajarse.\n> ");
-            String seleccion = obtenerSeleccion();
-            if (seleccion.equals("P")) {
+            int opcion = pedirOpcion();
+            if (opcion == 1) {
                 pedirCarta(baraja, manoJugador);
             }
-            if (seleccion.equals("B")) {
+            if (opcion == 2) {
                 bajarse(baraja, manoJugador, manoDealer);
                 break;
             }
         }
     }
 
-    private String obtenerSeleccion() {
-        Scanner scanner = new Scanner(System.in);
-        String seleccion = scanner.next();
-        return seleccion;
+    private int pedirValor() throws InputMismatchException {
+        return new Scanner(System.in).nextInt();
+    }
+
+    public int pedirOpcion() {
+        try {
+            System.out.print("\nEscriba (1) para pedir carta o (2) para bajarse.\n> ");
+            return pedirValor();
+        } catch (InputMismatchException e) {
+            return pedirOpcion();
+        }
     }
 
     private void mostrarManos(String[] manoJugador, String[] manoDealer) {
@@ -74,7 +80,7 @@ public class App {
         }
     }
 
-    public void bajarse(String[] baraja, String[] manoJugador, String[] manoDealer) {
+    public void bajarse(String[] baraja, String[] manoJugador, String[] manoDealer) throws NullPointerException {
 
         // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
         turnoDeDealer(baraja, manoDealer);
