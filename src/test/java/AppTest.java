@@ -98,7 +98,7 @@ class AppTest {
     }
 
     @Test
-    @DisplayName("Caso excepción donde la opcion dada es inválida")
+    @DisplayName("Caso excepción donde la opción dada es inválida")
     void verificaPedirValorCasoNoValorNumerico() {
         String entrada = "a";
         // Configura el System.in para que lea una
