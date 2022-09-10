@@ -1,8 +1,10 @@
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.io.ByteArrayInputStream;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,18 +12,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class AppTest {
 
     private App app;
+    private String[] manoJugador;
+    private String[] manoDealer;
+    private String[] baraja;
+    private Logger logger;
 
     @BeforeEach
     void init() {
         app = new App();
+        manoJugador = app.crearMano();
+        manoDealer = app.crearMano();
+        baraja = app.crearBaraja();
+        logger = Logger.getLogger("AppTest.class");
     }
 
     @Test
     void verificaQueDealerPideCartasCuandoJugadorSeBaja() {
-        var baraja = app.crearBaraja();
         app.barajar(baraja);
-        var manoJugador = app.crearMano();
-        var manoDealer = app.crearMano();
         manoDealer[0] = "CORAZON NUEVE";
         manoDealer[1] = "PICA TRES";
 
@@ -31,8 +38,6 @@ class AppTest {
 
     @Test
     void verificaQueDealerEsGanador() {
-        var manoJugador = app.crearMano();
-        var manoDealer = app.crearMano();
         manoJugador[0] = "TREBOL JOTA";
         manoJugador[1] = "PICA QUINA";
         manoDealer[0] = "TREBOL JOTA";
@@ -45,8 +50,6 @@ class AppTest {
 
     @Test
     void verificaQueJugadorEsBlackjack() {
-        var manoJugador = app.crearMano();
-        var manoDealer = app.crearMano();
         manoJugador[0] = "CORAZON QUINA";
         manoJugador[1] = "PICA AS";
         manoDealer[0] = "TREBOL JOTA";
@@ -57,10 +60,55 @@ class AppTest {
 
     @Test
     void pideCartaParaUnaManoVacia() {
-        var baraja = app.crearBaraja();
-        var mano = app.crearMano();
+        manoJugador = app.pedirCarta(baraja, manoJugador);
+        assertNotNull(manoJugador[0]);
+    }
 
-        mano = app.pedirCarta(baraja, mano);
-        assertNotNull(mano[0]);
+    @Test
+    @DisplayName("Caso excepción donde la mano de jugador es nula")
+    void verificarGanadorCasoManoJugadorNula() {
+        manoDealer[0] = "CORAZON QUINA";
+        var exception = assertThrows(NullPointerException.class,
+                () -> app.bajarse(baraja, null, manoDealer),
+                "Se ha ingresado una entrada nula");
+        logger.info("Se ha lanzado la excepción NullPointerException, dado " +
+                "que la mano del jugador estaba nulo. " + exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Caso excepción donde la carta dada es un valor inválido")
+    void verificarObtenerValorNumericoDeCartaEsNula() {
+        String carta = "una carta de uno de corazones";
+        var exception = assertThrows(NullPointerException.class,
+                () -> app.obtenerValorNumericoDeCarta(carta),
+                "Se ha ingresado una carta inválida");
+        logger.info("Se ha lanzado la excepción NullPointerException, dado " +
+                "que la carta dada es inválida. " + exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Caso excepción donde se pide una carta de una baraja vacía")
+    void verificaPedirCartaCasoBarajaVacía() {
+        baraja = new String[]{};
+        var exception = assertThrows(IndexOutOfBoundsException.class,
+                () -> app.pedirCarta(baraja, manoJugador),
+                "Se le ha pedido una carta a una baraja vacía");
+        logger.info("Se ha lanzado la excepción IndexOutOfBoundsException, dado " +
+                "que la baraja estaba vacía cuando se le pidío una carta. " + exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Caso excepción donde la opcion dada es inválida")
+    void verificaPedirValorCasoNoValorNumerico() {
+        String entrada = "a";
+        // Configura el System.in para que lea una
+        // entrada dada por variable en vez de por consola
+        var in = new ByteArrayInputStream(entrada.getBytes());
+        System.setIn(in);
+        var exception = assertThrows(NoSuchElementException.class,
+                () -> app.pedirOpcion(),
+                "Se ha ingresado una opción inválida");
+        logger.info("Se ha lanzado la excepción NoSuchElementException, dado " +
+                "que la opción dada es inválida. " + exception.getMessage());
     }
 }
