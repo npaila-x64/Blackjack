@@ -10,13 +10,13 @@ public class App {
 
     public void iniciar() {
 
-        String[] baraja = crearBaraja();
+        List<String> baraja = crearBaraja();
         barajar(baraja);
 
         jugar(baraja);
     }
 
-    public void jugar(String[] baraja) {
+    public void jugar(List<String> baraja) {
 
         System.out.println("""
                  /$$$$$$$  /$$                     /$$                               /$$     \s
@@ -30,8 +30,8 @@ public class App {
                                                        /$$  | $$                             \s
                                                       |  $$$$$$/                             \s
                                                        \\______/                             \s""");
-        String[] manoJugador = crearMano();
-        String[] manoDealer = crearMano();
+        List<String> manoJugador = crearMano();
+        List<String> manoDealer = crearMano();
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
 
@@ -43,7 +43,7 @@ public class App {
                 case 2 -> {bajarse(baraja, manoJugador, manoDealer); break salirBucle;}
                 case 3 -> {
                     if (esManoPartible(manoJugador)) {
-                        cambiarModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
+                        //cambiarModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
                         break salirBucle;
                     } else {
                         System.out.println("Tu mano no se puede partir.");
@@ -56,7 +56,6 @@ public class App {
     public void cambiarModoManoDoble(String[] baraja, String[][] manosJugador, String[] manoDealer) {
         salirBucle:
         while (true) {
-            mostrarManosConDobleMano(manosJugador, manoDealer);
             switch (pedirOpcion()) {
             }
         }
@@ -75,24 +74,26 @@ public class App {
         }
     }
 
-    private void mostrarManos(String[] manoJugador, String[] manoDealer) {
+    private void mostrarManos(List<String> manoJugador, List<String> manoDealer) {
         System.out.println("La mano del dealer es: ");
         mostrarManoConCartaEscondida(manoDealer);
         System.out.println("\nTu mano es: ");
         mostrarMano(manoJugador);
     }
 
-    private void mostrarManosConDobleMano(String[][] manosJugador, String[] manoDealer) {
+    private void mostrarManosConDobleMano(List<String> manosJugador, List<String> manoDealer) {
+        /*
         System.out.println("La mano del dealer es: ");
         mostrarManoConCartaEscondida(manoDealer);
         System.out.println("\nTus manos son: ");
-        for (String[] mano : manosJugador) {
+        for (var mano : manosJugador) {
             mostrarMano(mano);
             System.out.println();
         }
+        */
     }
 
-    public void turnoDeDealer(String[] baraja, String[] manoDealer) {
+    public void turnoDeDealer(List<String> baraja, List<String> manoDealer) {
         // Verifica primero que la mano del dealer no sea blackjack,
         // pues esta se verifica después
         if (!esBlackjack(manoDealer)) {
@@ -104,21 +105,13 @@ public class App {
         }
     }
 
-    public String[][] partirMano(String[] manoJugador) {
-        String[] mano1 = crearMano();
-        String[] mano2 = crearMano();
-        String[][] manosJugador = new String[][]{mano1, mano2};
-        manosJugador[0][0] = manoJugador[0];
-        manosJugador[1][0] = manoJugador[1];
-        return manosJugador;
-    }
-
-    public boolean esManoPartible(String[] manoJugador) {
+    public boolean esManoPartible(List<String> manoJugador) {
         if (contarCartasEnMano(manoJugador) > 2) return false;
-        return obtenerValorNumericoDeCarta(manoJugador[0]) == obtenerValorNumericoDeCarta(manoJugador[1]);
+        return obtenerValorNumericoDeCarta(manoJugador.get(0)) ==
+                obtenerValorNumericoDeCarta(manoJugador.get(1));
     }
 
-    public void bajarse(String[] baraja, String[] manoJugador, String[] manoDealer) throws NullPointerException {
+    public void bajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) throws NullPointerException {
 
         // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
         turnoDeDealer(baraja, manoDealer);
@@ -128,16 +121,16 @@ public class App {
         System.out.println("\nTu mano es: ");
         mostrarMano(manoJugador);
 
-        String[] manoGanadora = verificarGanador(manoJugador, manoDealer);
+        List<String> manoGanadora = verificarGanador(manoJugador, manoDealer);
 
-        if (manoGanadora == manoJugador) {
+        if (manoGanadora.equals(manoJugador)) {
             System.out.println("¡¡Ganaste!! :)))");
         } else {
             System.out.println("¡¡Perdiste!! :(((");
         }
     }
 
-    public String[] verificarGanador(String[] manoJugador, String[] manoDealer) {
+    public List<String> verificarGanador(List<String> manoJugador, List<String> manoDealer) {
 
         if (esBlackjack(manoJugador)) {
             return manoJugador;
@@ -159,7 +152,7 @@ public class App {
                 manoJugador : manoDealer;
     }
 
-    public void mostrarMano(String[] mano) {
+    public void mostrarMano(List<String> mano) {
         for (String carta : mano) {
             if (carta == null) {
                 break;
@@ -169,7 +162,7 @@ public class App {
         }
     }
 
-    public void mostrarManoConCartaEscondida(String[] mano) {
+    public void mostrarManoConCartaEscondida(List<String> mano) {
 
         int indice = 0;
 
@@ -187,21 +180,18 @@ public class App {
         }
     }
 
-    public void repartir(String[] baraja, String[] mano) {
+    public void repartir(List<String> baraja, List<String> mano) {
         pedirCarta(baraja, mano);
         pedirCarta(baraja, mano);
     }
 
-    public String[] pedirCarta(String[] baraja, String[] mano) {
+    public void pedirCarta(List<String> baraja, List<String> mano) {
 
         String carta;
-        carta = baraja[0];
-        eliminarPrimeraCartaDeBaraja(baraja);
 
-        moverCartasDeMano(mano);
-        mano[0] = carta;
-
-        return mano;
+        carta = baraja.get(0);
+        mano.add(carta);
+        baraja.remove(carta);
     }
 
     public void eliminarPrimeraCartaDeBaraja(String[] baraja) {
@@ -217,7 +207,7 @@ public class App {
         }
     }
 
-    public boolean esBlackjack(String[] mano) {
+    public boolean esBlackjack(List<String> mano) {
 
         if (contarCartasEnMano(mano) == 0 || contarCartasEnMano(mano) > 2) {
             return false;
@@ -226,11 +216,11 @@ public class App {
         boolean existeAs = false;
         boolean existe10 = false;
 
-        for (int i = 0; i < 2; i++) {
-            if (obtenerValorNumericoDeCarta(mano[i]) == 1) {
+        for (int indice = 0; indice < 2; indice++) {
+            if (obtenerValorNumericoDeCarta(mano.get(indice)) == 1) {
                 existeAs = true;
             }
-            if (obtenerValorNumericoDeCarta(mano[i]) == 10) {
+            if (obtenerValorNumericoDeCarta(mano.get(indice)) == 10) {
                 existe10 = true;
             }
         }
@@ -238,7 +228,7 @@ public class App {
         return (existeAs && existe10);
     }
 
-    public int contarCartasEnMano(String[] mano) {
+    public int contarCartasEnMano(List<String> mano) {
 
         int cartas = 0;
 
@@ -252,21 +242,21 @@ public class App {
         return cartas;
     }
 
-    public boolean sePasoDe21(String[] mano) {
+    public boolean sePasoDe21(List<String> mano) {
         return calcularSumaDeMano(mano) > 21;
     }
 
-    public String[] crearBaraja() {
+    public List<String> crearBaraja() {
 
-        var pintas = new String[] {"CORAZON", "TREBOL", "DIAMANTE", "PICA"};
-        var numerosCartas = new String[] {"AS", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER"};
+        var pintas = List.of("CORAZON", "TREBOL", "DIAMANTE", "PICA");
+        var numerosCartas = List.of("AS", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER");
 
-        String[] baraja = new String[52];
+        List<String> baraja = new ArrayList<>();
 
         int indice = 0;
         for (String p : pintas) {
             for (String n : numerosCartas) {
-                baraja[indice] = p + " " + n;
+                baraja.add(p + " " + n);
                 indice++;
             }
         }
@@ -274,22 +264,16 @@ public class App {
         return baraja;
     }
 
-    public void barajar(String[] baraja) {
-
-        List<String> barajaList = Arrays.asList(baraja);
-        Collections.shuffle(barajaList);
-
-        for (int i = 0; i < baraja.length; i++) {
-            baraja[i] = barajaList.get(i);
-        }
+    public void barajar(List<String> baraja) {
+        Collections.shuffle(baraja);
     }
 
-    public String[] crearMano() {
-        String[] mano = new String[11];
+    public List<String> crearMano() {
+        List<String> mano = new ArrayList<>();
         return mano;
     }
 
-    public int calcularSumaDeMano(String[] mano) {
+    public int calcularSumaDeMano(List<String> mano) {
 
         int valorTotal = 0;
 
