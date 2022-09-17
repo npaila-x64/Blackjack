@@ -111,4 +111,35 @@ class AppTest {
         logger.info("Se ha lanzado la excepción NoSuchElementException, dado " +
                 "que la opción dada es inválida. " + exception.getMessage());
     }
+
+    @Test
+    void verificaPartirManoTest() {
+        manoJugador[0] = "CORAZON AS";
+        manoJugador[1] = "PICA AS";
+        String[][] manosJugador = app.partirMano(manoJugador);
+        assertTrue(manosJugador[0][0].equals("CORAZON AS") &&
+                manosJugador[1][0].equals("PICA AS"));
+    }
+
+    @Test
+    void verificaEsManoPartibleTest() {
+        manoJugador[0] = "CORAZON AS";
+        manoJugador[1] = "PICA AS";
+        assertTrue(app.esManoPartible(manoJugador));
+    }
+
+    @Test
+    void verificaEsManoPartibleFallaCartasDesigualesTest() {
+        manoJugador[0] = "CORAZON AS";
+        manoJugador[1] = "PICA TRES";
+        assertFalse(app.esManoPartible(manoJugador));
+    }
+
+    @Test
+    void verificaEsManoPartibleFallaMasDeDosCartasTest() {
+        manoJugador[0] = "CORAZON AS";
+        manoJugador[1] = "PICA AS";
+        manoJugador[2] = "TREBOL AS";
+        assertFalse(app.esManoPartible(manoJugador));
+    }
 }

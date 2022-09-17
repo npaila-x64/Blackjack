@@ -41,6 +41,23 @@ public class App {
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, manoJugador);
                 case 2 -> {bajarse(baraja, manoJugador, manoDealer); break salirBucle;}
+                case 3 -> {
+                    if (esManoPartible(manoJugador)) {
+                        cambiarModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
+                        break salirBucle;
+                    } else {
+                        System.out.println("Tu mano no se puede partir.");
+                    }
+                }
+            }
+        }
+    }
+
+    public void cambiarModoManoDoble(String[] baraja, String[][] manosJugador, String[] manoDealer) {
+        salirBucle:
+        while (true) {
+            mostrarManosConDobleMano(manosJugador, manoDealer);
+            switch (pedirOpcion()) {
             }
         }
     }
@@ -51,7 +68,7 @@ public class App {
 
     public int pedirOpcion() {
         try {
-            System.out.print("\nEscriba (1) para pedir carta o (2) para bajarse.\n> ");
+            System.out.print("\nEscriba (1) para pedir carta, (2) para bajarse, o (3) para partir tu mano.\n> ");
             return pedirValor();
         } catch (InputMismatchException e) {
             return pedirOpcion();
@@ -63,6 +80,16 @@ public class App {
         mostrarManoConCartaEscondida(manoDealer);
         System.out.println("\nTu mano es: ");
         mostrarMano(manoJugador);
+    }
+
+    private void mostrarManosConDobleMano(String[][] manosJugador, String[] manoDealer) {
+        System.out.println("La mano del dealer es: ");
+        mostrarManoConCartaEscondida(manoDealer);
+        System.out.println("\nTus manos son: ");
+        for (String[] mano : manosJugador) {
+            mostrarMano(mano);
+            System.out.println();
+        }
     }
 
     public void turnoDeDealer(String[] baraja, String[] manoDealer) {
