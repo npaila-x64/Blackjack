@@ -123,8 +123,8 @@ public class App {
             if (carta == null) {
                 break;
             }
-            System.out.println("[" + obtenerValorLiteralDeCarta(carta) + " DE "
-                    + obtenerPintaDeCarta(carta) + "]");
+            System.out.printf("[%s DE %s]%n",
+                    obtenerValorLiteralDeCarta(carta), obtenerPintaDeCarta(carta));
         }
     }
 
