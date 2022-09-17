@@ -77,6 +77,20 @@ public class App {
         }
     }
 
+    public String[][] partirMano(String[] manoJugador) {
+        String[] mano1 = crearMano();
+        String[] mano2 = crearMano();
+        String[][] manosJugador = new String[][]{mano1, mano2};
+        manosJugador[0][0] = manoJugador[0];
+        manosJugador[1][0] = manoJugador[1];
+        return manosJugador;
+    }
+
+    public boolean esManoPartible(String[] manoJugador) {
+        if (contarCartasEnMano(manoJugador) > 2) return false;
+        return obtenerValorNumericoDeCarta(manoJugador[0]) == obtenerValorNumericoDeCarta(manoJugador[1]);
+    }
+
     public void bajarse(String[] baraja, String[] manoJugador, String[] manoDealer) throws NullPointerException {
 
         // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
@@ -139,8 +153,8 @@ public class App {
             if (indice == 0) {
                 System.out.println("[***************]");
             } else {
-                System.out.println("[" + obtenerValorLiteralDeCarta(carta) + " DE "
-                        + obtenerPintaDeCarta(carta) + "]");
+                System.out.printf("[%s DE %s]%n",
+                        obtenerValorLiteralDeCarta(carta), obtenerPintaDeCarta(carta));
             }
             indice++;
         }
