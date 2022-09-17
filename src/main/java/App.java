@@ -34,29 +34,63 @@ public class App {
         List<String> manoDealer = crearMano();
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
-
         salirBucle:
         while (true) {
             mostrarManos(manoJugador, manoDealer);
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, manoJugador);
-                case 2 -> {bajarse(baraja, manoJugador, manoDealer); break salirBucle;}
+                case 2 -> {procederABajarse(baraja, manoJugador, manoDealer); break salirBucle;}
                 case 3 -> {
                     if (esManoPartible(manoJugador)) {
-                        //cambiarModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
+                        procederAModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
                         break salirBucle;
-                    } else {
-                        System.out.println("Tu mano no se puede partir.");
                     }
+                    mostrarManoNoEsPartible();
                 }
             }
         }
     }
 
-    public void cambiarModoManoDoble(String[] baraja, String[][] manosJugador, String[] manoDealer) {
+    public void procederABajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) {
+        var manoGanadora = bajarse(baraja, manoJugador, manoDealer);
+        mostrarGanador(manoGanadora, manoJugador);
+    }
+
+    public List<List<String>> partirMano(List<String> manoJugador) {
+        List<String> primeraMano = new ArrayList<>();
+        primeraMano.add(manoJugador.get(0));
+        List<String> segundaMano = new ArrayList<>();
+        segundaMano.add(manoJugador.get(1));
+        manoJugador.clear();
+        List<List<String>> manosJugador = new ArrayList<>();
+        manosJugador.add(primeraMano);
+        manosJugador.add(segundaMano);
+        return manosJugador;
+    }
+
+    public void mostrarGanador(List<String> manoGanadora, List<String> manoJugador) {
+        if (manoGanadora.equals(manoJugador)) {
+            System.out.println("¡¡Ganaste esta ronda!! :)))");
+        } else {
+            System.out.println("¡¡Perdiste esta ronda!! :(((");
+        }
+        System.out.println();
+    }
+
+    public void procederAModoManoDoble(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
+        List<String> primeraMano = manosJugador.get(0);
+        List<String> segundaMano = manosJugador.get(1);
         salirBucle:
         while (true) {
+            mostrarManosConDobleMano(manosJugador, manoDealer);
             switch (pedirOpcion()) {
+                case 1 -> pedirCarta(baraja, primeraMano);
+                case 2 -> pedirCarta(baraja, segundaMano);
+                case 3 -> {
+                    procederABajarse(baraja, primeraMano, manoDealer);
+                    procederABajarse(baraja, segundaMano, manoDealer);
+                    break salirBucle;
+                }
             }
         }
     }
@@ -67,11 +101,23 @@ public class App {
 
     public int pedirOpcion() {
         try {
-            System.out.print("\nEscriba (1) para pedir carta, (2) para bajarse, o (3) para partir tu mano.\n> ");
             return pedirValor();
         } catch (InputMismatchException e) {
             return pedirOpcion();
         }
+    }
+
+    public void mostrarPedirOpcion() {
+        System.out.print("\nEscriba (1) para pedir carta, (2) para bajarse, o (3) para partir tu mano.\n> ");
+    }
+
+    public void mostrarPedirOpcionDobleMano() {
+        System.out.print("""
+            Escriba
+            (1) para pedir carta a su primera mano
+            (2) para pedir carta a su segunda mano
+            (3) para bajarse
+            """.concat("> "));
     }
 
     private void mostrarManos(List<String> manoJugador, List<String> manoDealer) {
@@ -79,18 +125,18 @@ public class App {
         mostrarManoConCartaEscondida(manoDealer);
         System.out.println("\nTu mano es: ");
         mostrarMano(manoJugador);
+        mostrarPedirOpcion();
     }
 
-    private void mostrarManosConDobleMano(List<String> manosJugador, List<String> manoDealer) {
-        /*
+    private void mostrarManosConDobleMano(List<List<String>> manosJugador, List<String> manoDealer) {
         System.out.println("La mano del dealer es: ");
         mostrarManoConCartaEscondida(manoDealer);
-        System.out.println("\nTus manos son: ");
-        for (var mano : manosJugador) {
-            mostrarMano(mano);
-            System.out.println();
-        }
-        */
+        System.out.println("\nTu primera mano es: ");
+        mostrarMano(manosJugador.get(0));
+        System.out.println("\nTu segunda mano es: ");
+        mostrarMano(manosJugador.get(1));
+        System.out.println();
+        mostrarPedirOpcionDobleMano();
     }
 
     public void turnoDeDealer(List<String> baraja, List<String> manoDealer) {
@@ -111,7 +157,11 @@ public class App {
                 obtenerValorNumericoDeCarta(manoJugador.get(1));
     }
 
-    public void bajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) throws NullPointerException {
+    public void mostrarManoNoEsPartible() {
+        System.out.println("Tu mano no se puede partir.");
+    }
+
+    public List<String> bajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) throws NullPointerException {
 
         // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
         turnoDeDealer(baraja, manoDealer);
@@ -122,12 +172,7 @@ public class App {
         mostrarMano(manoJugador);
 
         List<String> manoGanadora = verificarGanador(manoJugador, manoDealer);
-
-        if (manoGanadora.equals(manoJugador)) {
-            System.out.println("¡¡Ganaste!! :)))");
-        } else {
-            System.out.println("¡¡Perdiste!! :(((");
-        }
+        return manoGanadora;
     }
 
     public List<String> verificarGanador(List<String> manoJugador, List<String> manoDealer) {
