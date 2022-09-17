@@ -39,10 +39,14 @@ public class App {
             mostrarManos(manoJugador, manoDealer);
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, manoJugador);
-                case 2 -> {procederABajarse(baraja, manoJugador, manoDealer); break salirBucle;}
+                case 2 -> {
+                    if (esManoDealerBlackjack(manoDealer)) break salirBucle;
+                    realizarTurnoDeDealer(baraja, manoDealer);
+                    procederABajarse(baraja, manoJugador, manoDealer);
+                    break salirBucle;}
                 case 3 -> {
                     if (esManoPartible(manoJugador)) {
-                        procederAModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
+                        procederAModoDobleMano(baraja, partirMano(manoJugador), manoDealer);
                         break salirBucle;
                     }
                     mostrarManoNoEsPartible();
@@ -77,7 +81,7 @@ public class App {
         System.out.println();
     }
 
-    public void procederAModoManoDoble(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
+    public void procederAModoDobleMano(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
         List<String> primeraMano = manosJugador.get(0);
         List<String> segundaMano = manosJugador.get(1);
         salirBucle:
@@ -87,12 +91,22 @@ public class App {
                 case 1 -> pedirCarta(baraja, primeraMano);
                 case 2 -> pedirCarta(baraja, segundaMano);
                 case 3 -> {
+                    if (esManoDealerBlackjack(manoDealer)) break salirBucle;
+                    realizarTurnoDeDealer(baraja, manoDealer);
                     procederABajarse(baraja, primeraMano, manoDealer);
                     procederABajarse(baraja, segundaMano, manoDealer);
                     break salirBucle;
                 }
             }
         }
+    }
+
+    public boolean esManoDealerBlackjack(List<String> manoDealer) {
+        if (esBlackjack(manoDealer)) {
+            mostrarGanador(manoDealer, manoDealer);
+            return true;
+        }
+        return false;
     }
 
     private int pedirValor() throws InputMismatchException {
@@ -139,15 +153,11 @@ public class App {
         mostrarPedirOpcionDobleMano();
     }
 
-    public void turnoDeDealer(List<String> baraja, List<String> manoDealer) {
-        // Verifica primero que la mano del dealer no sea blackjack,
-        // pues esta se verifica después
-        if (!esBlackjack(manoDealer)) {
-            // CPU simple basado en una estrategia simple,
-            // pedir cartas mientras que el total de su mano sea menor a 16
-            while (calcularSumaDeMano(manoDealer) < 16) {
-                pedirCarta(baraja, manoDealer);
-            }
+    public void realizarTurnoDeDealer(List<String> baraja, List<String> manoDealer) {
+        // CPU simple basado en una estrategia simple,
+        // pedir cartas mientras que el total de su mano sea menor a 16
+        while (calcularSumaDeMano(manoDealer) < 16) {
+            pedirCarta(baraja, manoDealer);
         }
     }
 
@@ -162,10 +172,6 @@ public class App {
     }
 
     public List<String> bajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) throws NullPointerException {
-
-        // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
-        turnoDeDealer(baraja, manoDealer);
-
         System.out.println("La mano del dealer es: ");
         mostrarMano(manoDealer);
         System.out.println("\nTu mano es: ");
