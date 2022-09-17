@@ -144,4 +144,13 @@ class AppTest {
         assertFalse(app.esManoPartible(manoJugador));
     }
 
+    @Test
+    @DisplayName("Caso excepción donde la mano a partir dada es nula")
+    void verificaPartirManoManoEsNula() {
+        var exception = assertThrows(NullPointerException.class,
+                () -> app.partirMano(null),
+                "Se ha ingresado una opción inválida");
+        logger.info("Se ha lanzado la excepción NoSuchElementException, dado " +
+                "que la opción dada es inválida. " + exception.getMessage());
+    }
 }
