@@ -205,9 +205,6 @@ public class App {
 
     public void mostrarMano(List<String> mano) {
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             System.out.printf("[%s DE %s]%n",
                     obtenerValorLiteralDeCarta(carta), obtenerPintaDeCarta(carta));
         }
@@ -218,9 +215,6 @@ public class App {
         int indice = 0;
 
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             if (indice == 0) {
                 System.out.println("[***************]");
             } else {
@@ -239,23 +233,9 @@ public class App {
     public void pedirCarta(List<String> baraja, List<String> mano) {
 
         String carta;
-
         carta = baraja.get(0);
         mano.add(carta);
         baraja.remove(carta);
-    }
-
-    public void eliminarPrimeraCartaDeBaraja(String[] baraja) {
-        for (int i = 0; i < baraja.length - 1; i++) {
-            baraja[i] = baraja[i + 1];
-        }
-        baraja[baraja.length - 1] = null;
-    }
-
-    public void moverCartasDeMano(String[] mano) {
-        for (int i = mano.length - 1; i > 0; i--) {
-            mano[i] = mano[i - 1];
-        }
     }
 
     public boolean esBlackjack(List<String> mano) {
@@ -282,11 +262,7 @@ public class App {
     public int contarCartasEnMano(List<String> mano) {
 
         int cartas = 0;
-
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             cartas++;
         }
 
@@ -329,9 +305,6 @@ public class App {
         int valorTotal = 0;
 
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             valorTotal += obtenerValorNumericoDeCarta(carta);
         }
 
