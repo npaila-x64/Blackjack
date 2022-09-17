@@ -2,6 +2,7 @@ import org.apache.log4j.Logger;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,6 +25,15 @@ class AppTest {
         manoDealer = app.crearMano();
         baraja = app.crearBaraja();
         logger = Logger.getLogger("AppTest.class");
+    }
+
+    @BeforeAll
+    static void limpiarLog() {
+        try {
+            new File("src/test/resources/testinglogs.log").delete();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -144,4 +154,13 @@ class AppTest {
         assertFalse(app.esManoPartible(manoJugador));
     }
 
+    @Test
+    @DisplayName("Caso excepción donde la mano a partir dada es nula")
+    void verificaPartirManoManoEsNula() {
+        var exception = assertThrows(NullPointerException.class,
+                () -> app.partirMano(null),
+                "Se ha ingresado una opción inválida");
+        logger.info("Se ha lanzado la excepción NoSuchElementException, dado " +
+                "que la mano dada es nula. " + exception.getMessage());
+    }
 }
