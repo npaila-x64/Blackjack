@@ -9,15 +9,6 @@ public class App {
     }
 
     public void iniciar() {
-
-        List<String> baraja = crearBaraja();
-        barajar(baraja);
-
-        jugar(baraja);
-    }
-
-    public void jugar(List<String> baraja) {
-
         System.out.println("""
                  /$$$$$$$  /$$                     /$$                               /$$     \s
                 | $$__  $$| $$                    | $$                              | $$     \s
@@ -30,24 +21,34 @@ public class App {
                                                        /$$  | $$                             \s
                                                       |  $$$$$$/                             \s
                                                        \\______/                             \s""");
+
+        List<String> baraja = crearBaraja();
+        barajar(baraja);
+
         List<String> manoJugador = crearMano();
         List<String> manoDealer = crearMano();
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
-        salirBucle:
+
+        jugar(baraja, manoJugador, manoDealer);
+    }
+
+    public void jugar(List<String> baraja, List<String> manoJugador, List<String> manoDealer) {
+        salirJuego:
         while (true) {
             mostrarManos(manoJugador, manoDealer);
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, manoJugador);
                 case 2 -> {
-                    if (esManoDealerBlackjack(manoDealer)) break salirBucle;
+                    if (esManoDealerBlackjack(manoDealer)) break salirJuego;
                     realizarTurnoDeDealer(baraja, manoDealer);
                     procederABajarse(baraja, manoJugador, manoDealer);
-                    break salirBucle;}
+                    break salirJuego;
+                }
                 case 3 -> {
                     if (esManoPartible(manoJugador)) {
-                        procederAModoDobleMano(baraja, partirMano(manoJugador), manoDealer);
-                        break salirBucle;
+                        jugarADobleMano(baraja, partirMano(manoJugador), manoDealer);
+                        break salirJuego;
                     }
                     mostrarManoNoEsPartible();
                 }
@@ -81,21 +82,21 @@ public class App {
         System.out.println();
     }
 
-    public void procederAModoDobleMano(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
+    public void jugarADobleMano(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
         List<String> primeraMano = manosJugador.get(0);
         List<String> segundaMano = manosJugador.get(1);
-        salirBucle:
+        salirJuego:
         while (true) {
             mostrarManosConDobleMano(manosJugador, manoDealer);
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, primeraMano);
                 case 2 -> pedirCarta(baraja, segundaMano);
                 case 3 -> {
-                    if (esManoDealerBlackjack(manoDealer)) break salirBucle;
+                    if (esManoDealerBlackjack(manoDealer)) break salirJuego;
                     realizarTurnoDeDealer(baraja, manoDealer);
                     procederABajarse(baraja, primeraMano, manoDealer);
                     procederABajarse(baraja, segundaMano, manoDealer);
-                    break salirBucle;
+                    break salirJuego;
                 }
             }
         }
@@ -122,14 +123,20 @@ public class App {
     }
 
     public void mostrarPedirOpcion() {
-        System.out.print("\nEscriba (1) para pedir carta, (2) para bajarse, o (3) para partir tu mano.\n> ");
+        System.out.print("""
+            
+            Escriba
+            (1) para pedir carta
+            (2) para bajarse
+            (3) para partir tu mano
+            """.concat("> "));
     }
 
     public void mostrarPedirOpcionDobleMano() {
         System.out.print("""
             Escriba
-            (1) para pedir carta a su primera mano
-            (2) para pedir carta a su segunda mano
+            (1) para pedir carta a tu primera mano
+            (2) para pedir carta a tu segunda mano
             (3) para bajarse
             """.concat("> "));
     }
@@ -168,7 +175,7 @@ public class App {
     }
 
     public void mostrarManoNoEsPartible() {
-        System.out.println("Tu mano no se puede partir.");
+        System.out.println("----->X  Tu mano no se puede partir\n");
     }
 
     public List<String> bajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) throws NullPointerException {
