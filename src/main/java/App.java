@@ -35,15 +35,12 @@ public class App {
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
 
+        salirBucle:
         while (true) {
             mostrarManos(manoJugador, manoDealer);
-            int opcion = pedirOpcion();
-            if (opcion == 1) {
-                pedirCarta(baraja, manoJugador);
-            }
-            if (opcion == 2) {
-                bajarse(baraja, manoJugador, manoDealer);
-                break;
+            switch (pedirOpcion()) {
+                case 1 -> pedirCarta(baraja, manoJugador);
+                case 2 -> {bajarse(baraja, manoJugador, manoDealer); break salirBucle;}
             }
         }
     }
