@@ -3,7 +3,6 @@ import java.util.*;
 public class App {
 
     public static void main(String[] args) {
-
         App blackjack = new App();
         blackjack.iniciar();
     }
