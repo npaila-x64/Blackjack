@@ -2,7 +2,6 @@ import org.apache.log4j.Logger;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,7 +32,8 @@ class AppTest {
         manoDealer.add("CORAZON NUEVE");
         manoDealer.add("PICA TRES");
 
-        app.bajarse(baraja, manoJugador, manoDealer);
+        app.realizarTurnoDeDealer(baraja, manoDealer);
+        app.procederABajarse(baraja, manoJugador, manoDealer);
         assertTrue(app.calcularSumaDeMano(manoDealer) >= 16);
     }
 
@@ -69,10 +69,10 @@ class AppTest {
     @DisplayName("Caso excepción donde la mano de jugador es nula")
     void verificarGanadorCasoManoJugadorNula() {
         manoDealer.add("CORAZON QUINA");
-        var exception = assertThrows(IndexOutOfBoundsException.class,
+        var exception = assertThrows(NullPointerException.class,
                 () -> app.bajarse(baraja, null, manoDealer),
                 "Se ha ingresado una entrada nula");
-        logger.info("Se ha lanzado la excepción IndexOutOfBoundsException, dado " +
+        logger.info("Se ha lanzado la excepción NullPointerException, dado " +
                 "que la mano del jugador estaba nulo. " + exception.getMessage());
     }
 

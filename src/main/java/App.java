@@ -9,15 +9,6 @@ public class App {
     }
 
     public void iniciar() {
-
-        List<String> baraja = crearBaraja();
-        barajar(baraja);
-
-        jugar(baraja);
-    }
-
-    public void jugar(List<String> baraja) {
-
         System.out.println("""
                  /$$$$$$$  /$$                     /$$                               /$$     \s
                 | $$__  $$| $$                    | $$                              | $$     \s
@@ -30,20 +21,34 @@ public class App {
                                                        /$$  | $$                             \s
                                                       |  $$$$$$/                             \s
                                                        \\______/                             \s""");
+
+        List<String> baraja = crearBaraja();
+        barajar(baraja);
+
         List<String> manoJugador = crearMano();
         List<String> manoDealer = crearMano();
         repartir(baraja, manoJugador);
         repartir(baraja, manoDealer);
-        salirBucle:
+
+        jugar(baraja, manoJugador, manoDealer);
+    }
+
+    public void jugar(List<String> baraja, List<String> manoJugador, List<String> manoDealer) {
+        salirJuego:
         while (true) {
             mostrarManos(manoJugador, manoDealer);
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, manoJugador);
-                case 2 -> {procederABajarse(baraja, manoJugador, manoDealer); break salirBucle;}
+                case 2 -> {
+                    if (esManoDealerBlackjack(manoDealer)) break salirJuego;
+                    realizarTurnoDeDealer(baraja, manoDealer);
+                    procederABajarse(baraja, manoJugador, manoDealer);
+                    break salirJuego;
+                }
                 case 3 -> {
                     if (esManoPartible(manoJugador)) {
-                        procederAModoManoDoble(baraja, partirMano(manoJugador), manoDealer);
-                        break salirBucle;
+                        jugarADobleMano(baraja, partirMano(manoJugador), manoDealer);
+                        break salirJuego;
                     }
                     mostrarManoNoEsPartible();
                 }
@@ -77,22 +82,32 @@ public class App {
         System.out.println();
     }
 
-    public void procederAModoManoDoble(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
+    public void jugarADobleMano(List<String> baraja, List<List<String>> manosJugador, List<String> manoDealer) {
         List<String> primeraMano = manosJugador.get(0);
         List<String> segundaMano = manosJugador.get(1);
-        salirBucle:
+        salirJuego:
         while (true) {
             mostrarManosConDobleMano(manosJugador, manoDealer);
             switch (pedirOpcion()) {
                 case 1 -> pedirCarta(baraja, primeraMano);
                 case 2 -> pedirCarta(baraja, segundaMano);
                 case 3 -> {
+                    if (esManoDealerBlackjack(manoDealer)) break salirJuego;
+                    realizarTurnoDeDealer(baraja, manoDealer);
                     procederABajarse(baraja, primeraMano, manoDealer);
                     procederABajarse(baraja, segundaMano, manoDealer);
-                    break salirBucle;
+                    break salirJuego;
                 }
             }
         }
+    }
+
+    public boolean esManoDealerBlackjack(List<String> manoDealer) {
+        if (esBlackjack(manoDealer)) {
+            mostrarGanador(manoDealer, manoDealer);
+            return true;
+        }
+        return false;
     }
 
     private int pedirValor() throws InputMismatchException {
@@ -108,14 +123,20 @@ public class App {
     }
 
     public void mostrarPedirOpcion() {
-        System.out.print("\nEscriba (1) para pedir carta, (2) para bajarse, o (3) para partir tu mano.\n> ");
+        System.out.print("""
+            
+            Escriba
+            (1) para pedir carta
+            (2) para bajarse
+            (3) para partir tu mano
+            """.concat("> "));
     }
 
     public void mostrarPedirOpcionDobleMano() {
         System.out.print("""
             Escriba
-            (1) para pedir carta a su primera mano
-            (2) para pedir carta a su segunda mano
+            (1) para pedir carta a tu primera mano
+            (2) para pedir carta a tu segunda mano
             (3) para bajarse
             """.concat("> "));
     }
@@ -139,15 +160,11 @@ public class App {
         mostrarPedirOpcionDobleMano();
     }
 
-    public void turnoDeDealer(List<String> baraja, List<String> manoDealer) {
-        // Verifica primero que la mano del dealer no sea blackjack,
-        // pues esta se verifica después
-        if (!esBlackjack(manoDealer)) {
-            // CPU simple basado en una estrategia simple,
-            // pedir cartas mientras que el total de su mano sea menor a 16
-            while (calcularSumaDeMano(manoDealer) < 16) {
-                pedirCarta(baraja, manoDealer);
-            }
+    public void realizarTurnoDeDealer(List<String> baraja, List<String> manoDealer) {
+        // CPU simple basado en una estrategia simple,
+        // pedir cartas mientras que el total de su mano sea menor a 16
+        while (calcularSumaDeMano(manoDealer) < 16) {
+            pedirCarta(baraja, manoDealer);
         }
     }
 
@@ -158,14 +175,10 @@ public class App {
     }
 
     public void mostrarManoNoEsPartible() {
-        System.out.println("Tu mano no se puede partir.");
+        System.out.println("----->X  Tu mano no se puede partir\n");
     }
 
     public List<String> bajarse(List<String> baraja, List<String> manoJugador, List<String> manoDealer) throws NullPointerException {
-
-        // Cuando el Jugador decide bajarse, el Dealer pide sus cartas
-        turnoDeDealer(baraja, manoDealer);
-
         System.out.println("La mano del dealer es: ");
         mostrarMano(manoDealer);
         System.out.println("\nTu mano es: ");
@@ -177,21 +190,10 @@ public class App {
 
     public List<String> verificarGanador(List<String> manoJugador, List<String> manoDealer) {
 
-        if (esBlackjack(manoJugador)) {
-            return manoJugador;
-        }
-
-        if (esBlackjack(manoDealer)) {
-            return manoDealer;
-        }
-
-        if (sePasoDe21(manoJugador)) {
-            return manoDealer;
-        }
-
-        if (sePasoDe21(manoDealer)) {
-            return manoJugador;
-        }
+        if (esBlackjack(manoJugador)) return manoJugador;
+        if (esBlackjack(manoDealer)) return manoDealer;
+        if (sePasoDe21(manoJugador)) return manoDealer;
+        if (sePasoDe21(manoDealer)) return manoJugador;
 
         return calcularSumaDeMano(manoJugador) > calcularSumaDeMano(manoDealer) ?
                 manoJugador : manoDealer;
@@ -199,9 +201,6 @@ public class App {
 
     public void mostrarMano(List<String> mano) {
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             System.out.printf("[%s DE %s]%n",
                     obtenerValorLiteralDeCarta(carta), obtenerPintaDeCarta(carta));
         }
@@ -212,9 +211,6 @@ public class App {
         int indice = 0;
 
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             if (indice == 0) {
                 System.out.println("[***************]");
             } else {
@@ -233,23 +229,9 @@ public class App {
     public void pedirCarta(List<String> baraja, List<String> mano) {
 
         String carta;
-
         carta = baraja.get(0);
         mano.add(carta);
         baraja.remove(carta);
-    }
-
-    public void eliminarPrimeraCartaDeBaraja(String[] baraja) {
-        for (int i = 0; i < baraja.length - 1; i++) {
-            baraja[i] = baraja[i + 1];
-        }
-        baraja[baraja.length - 1] = null;
-    }
-
-    public void moverCartasDeMano(String[] mano) {
-        for (int i = mano.length - 1; i > 0; i--) {
-            mano[i] = mano[i - 1];
-        }
     }
 
     public boolean esBlackjack(List<String> mano) {
@@ -276,11 +258,7 @@ public class App {
     public int contarCartasEnMano(List<String> mano) {
 
         int cartas = 0;
-
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             cartas++;
         }
 
@@ -323,9 +301,6 @@ public class App {
         int valorTotal = 0;
 
         for (String carta : mano) {
-            if (carta == null) {
-                break;
-            }
             valorTotal += obtenerValorNumericoDeCarta(carta);
         }
 
