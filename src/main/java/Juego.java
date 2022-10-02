@@ -58,13 +58,13 @@ public class Juego {
                     procederABajarse();
                     break salirJuego;
                 }
-                case 3 -> {
-                    if (jugador.getMano().esManoPartible()) {
+//                case 3 -> {
+//                    if (jugador.getMano().esManoPartible()) {
 //                        jugarADobleMano(baraja, partirMano(manoJugador), manoDealer);
-                        break salirJuego;
-                    }
-                    mostrarManoNoEsPartible();
-                }
+//                        break salirJuego;
+//                    }
+//                    mostrarManoNoEsPartible();
+//                }
             }
         }
     }
@@ -181,7 +181,6 @@ public class Juego {
             Escriba
             (1) para pedir carta
             (2) para bajarse
-            (3) para partir tu mano
             """.concat("> "));
     }
 
