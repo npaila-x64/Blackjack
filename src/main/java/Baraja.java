@@ -31,4 +31,9 @@ public class Baraja {
         mano.agregarCarta(carta);
         cartas.remove(carta);
     }
+
+    @Override
+    public String toString() {
+        return cartas.toString();
+    }
 }

@@ -199,4 +199,9 @@ public class Juego {
         baraja.pedirCarta(jugador);
         baraja.pedirCarta(jugador);
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

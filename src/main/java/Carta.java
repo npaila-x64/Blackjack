@@ -56,4 +56,9 @@ public class Carta {
 
         return mapa;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", pinta, valor, valorNumerico);
+    }
 }
