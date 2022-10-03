@@ -3,8 +3,6 @@ import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,26 +41,26 @@ class AppTest {
         baraja.barajar();
         Carta carta;
         carta = new Carta("CORAZON", "NUEVE");
-        dealer.getMano().agregarCarta(carta);
+        dealer.getManoEnJuego().agregarCarta(carta);
         carta = new Carta("PICA", "TRES");
-        dealer.getMano().agregarCarta(carta);
+        dealer.getManoEnJuego().agregarCarta(carta);
 
         juego.realizarTurnoDeDealer();
         juego.procederABajarse();
-        assertTrue(dealer.getMano().calcularSumaDeMano() >= 16);
+        assertTrue(dealer.getManoEnJuego().calcularSumaDeMano() >= 16);
     }
 
     @Test
     void verificaQueDealerEsGanador() {
         Carta carta;
         carta = new Carta("PICA", "QUINA");
-        jugador.getMano().agregarCarta(carta);
+        jugador.getManoEnJuego().agregarCarta(carta);
         carta = new Carta("TREBOL", "JOTA");
-        jugador.getMano().agregarCarta(carta);
+        jugador.getManoEnJuego().agregarCarta(carta);
         carta = new Carta("PICA", "QUINA");
-        dealer.getMano().agregarCarta(carta);
+        dealer.getManoEnJuego().agregarCarta(carta);
         carta = new Carta("PICA", "AS");
-        dealer.getMano().agregarCarta(carta);
+        dealer.getManoEnJuego().agregarCarta(carta);
 
         var ganador = juego.verificarGanador();
         assertEquals(ganador, dealer);
@@ -72,11 +70,11 @@ class AppTest {
     void verificaQueJugadorEsBlackjack() {
         Carta carta;
         carta = new Carta("CORAZON", "QUINA");
-        jugador.getMano().agregarCarta(carta);
+        jugador.getManoEnJuego().agregarCarta(carta);
         carta = new Carta("PICA", "AS");
-        jugador.getMano().agregarCarta(carta);
+        jugador.getManoEnJuego().agregarCarta(carta);
         carta = new Carta("TREBOL", "JOTA");
-        dealer.getMano().agregarCarta(carta);
+        dealer.getManoEnJuego().agregarCarta(carta);
 
         var ganador = juego.verificarGanador();
         assertEquals(jugador, ganador);
@@ -85,7 +83,7 @@ class AppTest {
     @Test
     void pideCartaParaUnaManoVacia() {
         baraja.pedirCarta(jugador);
-        assertEquals(jugador.getMano().totalCartas(), 1);
+        assertEquals(jugador.getManoEnJuego().totalCartas(), 1);
     }
 
 //    @Test

@@ -1,6 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Jugador {
 
-    private Mano mano;
+    private List<Mano> manos;
+    private Mano manoEnJuego;
     private Integer apuesta;
     private Integer monto;
     private String nombre;
@@ -27,21 +31,31 @@ public class Jugador {
     }
 
     private void inicializar(Mano mano) {
-        this.mano = mano;
+        this.manos = new ArrayList<>();
+        this.manos.add(mano);
+        setManoEnJuego(mano);
         apuesta = 0;
         monto = 0;
+    }
+
+    public void setManoEnJuego(Mano manoEnJuego) {
+        this.manoEnJuego = manoEnJuego;
     }
 
     public boolean esDealer() {
         return esDealer;
     }
 
-    public Mano getMano() {
-        return mano;
+    public Mano getManoEnJuego() {
+        return manoEnJuego;
+    }
+
+    public List<Mano> getManos() {
+        return manos;
     }
 
     @Override
     public String toString() {
-        return mano.toString();
+        return manos.toString();
     }
 }

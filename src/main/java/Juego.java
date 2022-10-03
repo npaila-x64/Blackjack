@@ -58,15 +58,19 @@ public class Juego {
                     procederABajarse();
                     break salirJuego;
                 }
-//                case 3 -> {
-//                    if (jugador.getMano().esManoPartible()) {
-//                        jugarADobleMano(baraja, partirMano(manoJugador), manoDealer);
-//                        break salirJuego;
-//                    }
-//                    mostrarManoNoEsPartible();
-//                }
+                case 3 -> {
+                    if (esManoJugadorPartible(jugador)) {
+                        jugarADobleMano();
+                        break salirJuego;
+                    }
+                    mostrarManoNoEsPartible();
+                }
             }
         }
+    }
+
+    public boolean esManoJugadorPartible(Jugador jugador) {
+        return jugador.getManoEnJuego().esManoPartible();
     }
 
     public List<List<String>> partirMano() {
@@ -107,7 +111,7 @@ public class Juego {
     }
 
     public boolean esManoDealerBlackjack() {
-        if (dealer.getMano().esBlackjack()) {
+        if (dealer.getManoEnJuego().esBlackjack()) {
             mostrarGanador(dealer);
             return true;
         }
@@ -120,9 +124,9 @@ public class Juego {
 
     public Jugador bajarse() throws NullPointerException {
         System.out.println("La mano del dealer es: ");
-        dealer.getMano().mostrarMano();
+        dealer.getManoEnJuego().mostrarMano();
         System.out.println("\nTu mano es: ");
-        jugador.getMano().mostrarMano();
+        jugador.getManoEnJuego().mostrarMano();
 
         Jugador jugadorGanador = verificarGanador();
         return jugadorGanador;
@@ -130,12 +134,12 @@ public class Juego {
 
     public Jugador verificarGanador() {
 
-        if (jugador.getMano().esBlackjack()) return jugador;
-        if (dealer.getMano().esBlackjack()) return dealer;
-        if (dealer.getMano().sePasoDe21()) return dealer;
-        if (jugador.getMano().sePasoDe21()) return jugador;
+        if (jugador.getManoEnJuego().esBlackjack()) return jugador;
+        if (dealer.getManoEnJuego().esBlackjack()) return dealer;
+        if (dealer.getManoEnJuego().sePasoDe21()) return dealer;
+        if (jugador.getManoEnJuego().sePasoDe21()) return jugador;
 
-        return jugador.getMano().calcularSumaDeMano() > dealer.getMano().calcularSumaDeMano() ?
+        return jugador.getManoEnJuego().calcularSumaDeMano() > dealer.getManoEnJuego().calcularSumaDeMano() ?
                 jugador : dealer;
     }
 
@@ -151,22 +155,22 @@ public class Juego {
     public void realizarTurnoDeDealer() {
         // CPU simple basado en una estrategia simple,
         // pedir cartas mientras que el total de su mano sea menor a 16
-        while (dealer.getMano().calcularSumaDeMano() < 16) {
+        while (dealer.getManoEnJuego().calcularSumaDeMano() < 16) {
             baraja.pedirCarta(dealer);
         }
     }
 
     private void mostrarManos() {
         System.out.println("La mano del dealer es: ");
-        dealer.getMano().mostrarConCartaEscondida();
+        dealer.getManoEnJuego().mostrarConCartaEscondida();
         System.out.println("\nTu mano es: ");
-        jugador.getMano().mostrarMano();
+        jugador.getManoEnJuego().mostrarMano();
         mostrarPedirOpcion();
     }
 
     private void mostrarManosConDobleMano() {
         System.out.println("La mano del dealer es: ");
-        dealer.getMano().mostrarConCartaEscondida();
+        dealer.getManoEnJuego().mostrarConCartaEscondida();
         System.out.println("\nTu primera mano es: ");
 //        mostrarMano(manosJugador.get(0));
         System.out.println("\nTu segunda mano es: ");

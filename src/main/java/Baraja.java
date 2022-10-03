@@ -26,7 +26,7 @@ public class Baraja {
     }
 
     public void pedirCarta(Jugador jugador) {
-        Mano mano = jugador.getMano();
+        Mano mano = jugador.getManoEnJuego();
         Carta carta = cartas.get(0);
         mano.agregarCarta(carta);
         cartas.remove(carta);
