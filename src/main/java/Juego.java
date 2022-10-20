@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Juego {
 
@@ -52,16 +51,39 @@ public class Juego {
                                                    \\______/                             \s""");
     }
 
+    private List<List<Runnable>> generarOpciones() {
+        // Las opciones se van generando según el contexto
+
+        List<List<Runnable>> opciones = new LinkedList<>(); //LinkedList garantiza el orden de inserción
+
+        opciones.add(List.of(
+                () -> System.exit(0),
+                () -> System.out.println("para salir")));
+
+        opciones.add(List.of(
+                this::pedirCartaAJugador,
+                () -> System.out.println("para pedir carta")));
+
+        opciones.add(List.of(
+                this::bajarJugador,
+                () -> System.out.println("para bajarse")));
+
+        if (esManoJugadorPartible(jugador)) {
+            opciones.add(List.of(
+                    this::partirManoJugador,
+                    () -> System.out.println("para partir tu mano")));
+        }
+        return opciones;
+    }
+
     private void jugar() {
-        salirJuego:
         while (true) {
+            var opciones = generarOpciones();
             mostrarManos();
-            mostrarPedirOpcion(opciones);
-            switch (Utilidad.pedirOpcionHasta(opciones.size())) {
-                case 1 -> pedirCartaAJugador();
-                case 2 -> bajarJugador();
-                case 3 -> partirManoJugador();
-            }
+            mostrarOpciones(opciones);
+            opciones.get(Utilidad.pedirOpcionHasta(opciones.size()))
+                    .get(0) // obtiene el método correspodiente a la acción que se desea realizar
+                    .run();
         }
     }
 
@@ -70,24 +92,19 @@ public class Juego {
     }
 
     private void bajarJugador() {
-        if (esManoDealerBlackjack()) return;
-        realizarTurnoDeDealer();
-        procederABajarse();
-    }
-
-    private void partirManoJugador() {
-        if (esManoJugadorPartible(jugador)) {
-            jugarADobleMano();
+        if (esManoDealerBlackjack()) {
+            mostrarGanador(dealer);
             return;
         }
-        mostrarManoNoEsPartible();
+        realizarTurnoDeDealer();
+        procederABajarse();
     }
 
     public boolean esManoJugadorPartible(Jugador jugador) {
         return jugador.getManoEnJuego().esManoPartible();
     }
 
-    public void jugarADobleMano() {
+    public void partirManoJugador() {
         jugador.partirMano();
         salirJuego:
         while (true) {
@@ -115,15 +132,7 @@ public class Juego {
     }
 
     public boolean esManoDealerBlackjack() {
-        if (dealer.getManoEnJuego().esBlackjack()) {
-            mostrarGanador(dealer);
-            return true;
-        }
-        return false;
-    }
-
-    public void mostrarManoNoEsPartible() {
-        System.out.println("----->X  Tu mano no se puede partir\n");
+        return dealer.getManoEnJuego().esBlackjack();
     }
 
     public Jugador bajarse() throws NullPointerException {
@@ -169,7 +178,6 @@ public class Juego {
         dealer.getManoEnJuego().mostrarConCartaEscondida();
         System.out.println("\nTu mano es: ");
         jugador.getManoEnJuego().mostrarMano();
-        mostrarPedirOpcion();
     }
 
     private void mostrarManosConDobleMano() {
@@ -185,14 +193,14 @@ public class Juego {
         mostrarPedirOpcionDobleMano();
     }
 
-    public void mostrarPedirOpcion() {
-        System.out.print("""
-            
-            Escriba
-            (1) para pedir carta
-            (2) para bajarse
-            (3) para partir tu mano
-            """.concat("> "));
+    public void mostrarOpciones(List<List<Runnable>> opciones) {
+        System.out.println("\nEscriba");
+        for (List<Runnable> opcion : opciones) {
+            System.out.printf("(%s) ", opciones.indexOf(opcion));
+            opcion.get(1)
+                    .run();
+        }
+        System.out.print("> ");
     }
 
     public void mostrarPedirOpcionDobleMano() {
