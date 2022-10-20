@@ -73,32 +73,22 @@ public class Juego {
         return jugador.getManoEnJuego().esManoPartible();
     }
 
-    public List<List<String>> partirMano() {
-        List<String> primeraMano = new ArrayList<>();
-//        primeraMano.add(jugador.getMano().get(0));
-        List<String> segundaMano = new ArrayList<>();
-//        segundaMano.add(manoJugador.get(1));
-//        manoJugador.clear();
-        List<List<String>> manosJugador = new ArrayList<>();
-        manosJugador.add(primeraMano);
-        manosJugador.add(segundaMano);
-        return manosJugador;
-    }
-
     public void jugarADobleMano() {
-//        List<String> primeraMano = manosJugador.get(0);
-//        List<String> segundaMano = manosJugador.get(1);
+        jugador.partirMano();
         salirJuego:
         while (true) {
             mostrarManosConDobleMano();
             switch (Utilidad.pedirOpcion()) {
-                case 1 -> baraja.pedirCarta(jugador);
-                case 2 -> baraja.pedirCarta(jugador);
+                case 1 -> {
+                    jugador.setManoEnJuego(jugador.getManos().get(0));
+                    baraja.pedirCarta(jugador);}
+                case 2 -> {
+                    jugador.setManoEnJuego(jugador.getManos().get(1));
+                    baraja.pedirCarta(jugador);}
                 case 3 -> {
                     if (esManoDealerBlackjack()) break salirJuego;
                     realizarTurnoDeDealer();
-//                    procederABajarse(baraja, primeraMano, manoDealer);
-//                    procederABajarse(baraja, segundaMano, manoDealer);
+                    procederABajarse();
                     break salirJuego;
                 }
             }
@@ -172,9 +162,11 @@ public class Juego {
         System.out.println("La mano del dealer es: ");
         dealer.getManoEnJuego().mostrarConCartaEscondida();
         System.out.println("\nTu primera mano es: ");
-//        mostrarMano(manosJugador.get(0));
+        jugador.setManoEnJuego(jugador.getManos().get(0));
+        jugador.getManoEnJuego().mostrarMano();
         System.out.println("\nTu segunda mano es: ");
-//        mostrarMano(manosJugador.get(1));
+        jugador.setManoEnJuego(jugador.getManos().get(1));
+        jugador.getManoEnJuego().mostrarMano();
         System.out.println();
         mostrarPedirOpcionDobleMano();
     }
@@ -185,6 +177,7 @@ public class Juego {
             Escriba
             (1) para pedir carta
             (2) para bajarse
+            (3) para partir tu mano
             """.concat("> "));
     }
 

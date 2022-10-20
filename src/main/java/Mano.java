@@ -9,6 +9,14 @@ public class Mano {
         cartas = new ArrayList<>();
     }
 
+    public Carta getPrimeraCarta() {
+        return cartas.get(0);
+    }
+
+    public Carta getSegundaCarta() {
+        return cartas.get(1);
+    }
+
     public void agregarCarta(Carta carta) {
         cartas.add(carta);
     }

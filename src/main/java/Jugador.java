@@ -54,6 +54,21 @@ public class Jugador {
         return manos;
     }
 
+    public void partirMano() {
+        Mano primeraMano = new Mano();
+        Mano segundaMano = new Mano();
+        primeraMano.agregarCarta(manoEnJuego.getPrimeraCarta());
+        segundaMano.agregarCarta(manoEnJuego.getSegundaCarta());
+        eliminarManoDeJuego(manoEnJuego);
+        manos.add(primeraMano);
+        manos.add(segundaMano);
+        this.manoEnJuego = primeraMano;
+    }
+
+    private void eliminarManoDeJuego(Mano mano) {
+        this.manos.remove(mano);
+    }
+
     @Override
     public String toString() {
         return manos.toString();
