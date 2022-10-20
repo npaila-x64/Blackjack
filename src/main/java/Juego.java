@@ -25,14 +25,16 @@ public class Juego {
         baraja = new Baraja();
         baraja.barajar();
 
-        Mano manoDealer = new Mano();
-        dealer = new Jugador(manoDealer, true);
-        Mano manoJugador = new Mano();
-        jugador = new Jugador(manoJugador);
-        repartir(dealer);
-        repartir(jugador);
+        dealer = new Jugador(new Mano(), true);
+        jugador = new Jugador(new Mano());
+        repartirCartas();
 
         jugar();
+    }
+
+    private void repartirCartas() {
+        repartir(dealer);
+        repartir(jugador);
     }
 
     private void imprimirTitulo() {
@@ -54,23 +56,31 @@ public class Juego {
         salirJuego:
         while (true) {
             mostrarManos();
-            switch (Utilidad.pedirOpcion()) {
-                case 1 -> baraja.pedirCarta(jugador);
-                case 2 -> {
-                    if (esManoDealerBlackjack()) break salirJuego;
-                    realizarTurnoDeDealer();
-                    procederABajarse();
-                    break salirJuego;
-                }
-                case 3 -> {
-                    if (esManoJugadorPartible(jugador)) {
-                        jugarADobleMano();
-                        break salirJuego;
-                    }
-                    mostrarManoNoEsPartible();
-                }
+            mostrarPedirOpcion(opciones);
+            switch (Utilidad.pedirOpcionHasta(opciones.size())) {
+                case 1 -> pedirCartaAJugador();
+                case 2 -> bajarJugador();
+                case 3 -> partirManoJugador();
             }
         }
+    }
+
+    private void pedirCartaAJugador() {
+        baraja.pedirCarta(jugador);
+    }
+
+    private void bajarJugador() {
+        if (esManoDealerBlackjack()) return;
+        realizarTurnoDeDealer();
+        procederABajarse();
+    }
+
+    private void partirManoJugador() {
+        if (esManoJugadorPartible(jugador)) {
+            jugarADobleMano();
+            return;
+        }
+        mostrarManoNoEsPartible();
     }
 
     public boolean esManoJugadorPartible(Jugador jugador) {
@@ -82,7 +92,7 @@ public class Juego {
         salirJuego:
         while (true) {
             mostrarManosConDobleMano();
-            switch (Utilidad.pedirOpcion()) {
+            switch (Utilidad.pedirOpcionHasta(3)) {
                 case 1 -> {
                     jugador.setManoEnJuego(jugador.getManos().get(0));
                     baraja.pedirCarta(jugador);}

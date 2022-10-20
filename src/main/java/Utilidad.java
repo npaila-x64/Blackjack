@@ -7,11 +7,24 @@ public class Utilidad {
         return new Scanner(System.in).nextInt();
     }
 
-    public static int pedirOpcion() {
+    public static int pedirOpcionHasta(int limite) {
         try {
-            return pedirValor();
+            return pedirValorEnteroEnIntervalo(limite);
         } catch (InputMismatchException e) {
-            return pedirOpcion();
+            mostrarOpcionInvalida();
+            return pedirOpcionHasta(limite);
         }
+    }
+
+    public static int pedirValorEnteroEnIntervalo(int limite) throws InputMismatchException {
+        int valor = new Scanner(System.in).nextInt();
+        if (valor < 0 || valor > limite) {
+            throw new InputMismatchException("El parámetro dado sobrepasa el límite");
+        }
+        return valor;
+    }
+
+    public static void mostrarOpcionInvalida() {
+        System.out.print("Por favor, escoja una opción válida\n> ");
     }
 }
