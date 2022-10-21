@@ -112,10 +112,10 @@ public class Juego {
     }
 
     public Jugador evaluarManoGanadora() {
-        if (jugador.getManoEnJuego().esBlackjack()) return jugador;
         if (dealer.getManoEnJuego().esBlackjack()) return dealer;
-        if (dealer.getManoEnJuego().sePasoDe21()) return dealer;
-        if (jugador.getManoEnJuego().sePasoDe21()) return jugador;
+        if (jugador.getManoEnJuego().esBlackjack()) return jugador;
+        if (dealer.getManoEnJuego().sePasoDe21()) return jugador;
+        if (jugador.getManoEnJuego().sePasoDe21()) return dealer;
 
         return jugador.getManoEnJuego().calcularSumaDeMano() > dealer.getManoEnJuego().calcularSumaDeMano() ?
                 jugador : dealer;
