@@ -191,15 +191,15 @@ public class Juego {
                 () -> System.out.println("para salir")));
     }
 
-    private void agregarOpcionesPedirCarta(List<List<Runnable>> opciones) {
+    private void agregarOpcionesPartirCarta(List<List<Runnable>> opciones) {
         if (jugador.getManos().size() == 1) {
-            agregarOpcionPedirCartaSingular(opciones);
+            agregarOpcionPartirCartaSingular(opciones);
         } else {
-            agregarOpcionPedirCartaMultiple(opciones);
+            agregarOpcionPartirCartaMultiple(opciones);
         }
     }
 
-    private void agregarOpcionPedirCartaSingular(List<List<Runnable>> opciones) {
+    private void agregarOpcionPartirCartaSingular(List<List<Runnable>> opciones) {
         if (esManoJugadorPartible(jugador)) {
             opciones.add(List.of(
                     this::partirManoDeJugador,
@@ -207,7 +207,7 @@ public class Juego {
         }
     }
 
-    private void agregarOpcionPedirCartaMultiple(List<List<Runnable>> opciones) {
+    private void agregarOpcionPartirCartaMultiple(List<List<Runnable>> opciones) {
         for (int indice = 0; indice < jugador.getManos().size(); indice++) {
             if (esManoJugadorPartible(jugador, indice)) {
                 String opcion = String.format("para partir tu %s° mano", indice + 1);
@@ -219,21 +219,21 @@ public class Juego {
         }
     }
 
-    private void agregarOpcionesPartirCarta(List<List<Runnable>> opciones) {
+    private void agregarOpcionesPedirCarta(List<List<Runnable>> opciones) {
         if (jugador.getManos().size() == 1) {
-            agregarOpcionPartirCartaSingular(opciones);
+            agregarOpcionPedirCartaSingular(opciones);
         } else {
-            agregarOpcionPartirCartaMultiple(opciones);
+            agregarOpcionPedirCartaMultiple(opciones);
         }
     }
 
-    private void agregarOpcionPartirCartaSingular(List<List<Runnable>> opciones) {
+    private void agregarOpcionPedirCartaSingular(List<List<Runnable>> opciones) {
         opciones.add(List.of(
                 this::pedirCartaAManoDeJugador,
                 () -> System.out.println("para pedir carta")));
     }
 
-    private void agregarOpcionPartirCartaMultiple(List<List<Runnable>> opciones) {
+    private void agregarOpcionPedirCartaMultiple(List<List<Runnable>> opciones) {
         for (int indice = 0; indice < jugador.getManos().size(); indice++) {
             String opcion = String.format("para pedir carta a tu %s° mano", indice + 1);
             int finalIndice = indice;
