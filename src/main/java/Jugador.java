@@ -74,9 +74,7 @@ public class Jugador {
     }
 
     public void eliminarManos() {
-        for (Mano mano : this.manos) {
-            eliminarManoDeJuego(mano);
-        }
+        this.manos.clear();
     }
 
     @Override
