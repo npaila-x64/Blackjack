@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Baraja {
 
-    private List<Carta> cartas;
+    private final List<Carta> cartas;
 
     public Baraja() {
         var pintas = List.of("CORAZON", "TREBOL", "DIAMANTE", "PICA");
@@ -35,5 +35,9 @@ public class Baraja {
     @Override
     public String toString() {
         return cartas.toString();
+    }
+
+    public Integer size() {
+        return cartas.size();
     }
 }
