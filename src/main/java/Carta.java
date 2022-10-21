@@ -1,8 +1,11 @@
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Carta {
 
+    private final List<String> cartas = List.of("AS", "DOS", "TRES", "CUATRO", "CINCO",
+            "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER");
     private String pinta;
     private Integer valorNumerico;
     private String valor;
@@ -10,8 +13,7 @@ public class Carta {
     public Carta() {}
 
     public Carta(String pinta, String valor) {
-        this.pinta = pinta;
-        this.valor = valor;
+        setPinta(pinta);
         setValor(valor);
     }
 
@@ -36,15 +38,12 @@ public class Carta {
     }
 
     public void setValor(String valor) {
+        if (!cartas.contains(valor)) throw new NoSuchElementException();
         setValorNumerico(crearMapaDeValores().get(valor));
         this.valor = valor;
     }
 
     public HashMap<String, Integer> crearMapaDeValores() {
-
-        List<String> cartas = List.of("AS", "DOS", "TRES", "CUATRO", "CINCO",
-                "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER");
-
         HashMap<String, Integer> mapa = new HashMap<>();
         int valorCarta = 1;
 
