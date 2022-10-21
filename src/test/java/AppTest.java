@@ -4,6 +4,8 @@ import org.junit.jupiter.api.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.NoSuchElementException;
+import static enums.Pinta.*;
+import static enums.Valor.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,9 +42,9 @@ class AppTest {
     void verificaQueDealerPideCartasCuandoJugadorSeBaja() {
         baraja.barajar();
         Carta carta;
-        carta = new Carta("CORAZON", "NUEVE");
+        carta = new Carta(CORAZON, NUEVE);
         dealer.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("PICA", "TRES");
+        carta = new Carta(PICA, TRES);
         dealer.getManoEnJuego().agregarCarta(carta);
 
         juego.pedirCartasADealer();
@@ -52,13 +54,13 @@ class AppTest {
     @Test
     void verificaQueDealerEsGanador() {
         Carta carta;
-        carta = new Carta("PICA", "QUINA");
+        carta = new Carta(PICA, QUINA);
         jugador.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("TREBOL", "JOTA");
+        carta = new Carta(TREBOL, JOTA);
         jugador.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("PICA", "QUINA");
+        carta = new Carta(PICA, QUINA);
         dealer.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("PICA", "AS");
+        carta = new Carta(PICA, AS);
         dealer.getManoEnJuego().agregarCarta(carta);
 
         var ganador = juego.evaluarManoGanadora();
@@ -67,9 +69,9 @@ class AppTest {
 
     @Test
     void verificaQueManoJugadorEsBlackjack() {
-        jugador.getManoEnJuego().agregarCarta(new Carta("CORAZON", "QUINA"));
-        jugador.getManoEnJuego().agregarCarta(new Carta("PICA", "AS"));
-        dealer.getManoEnJuego().agregarCarta(new Carta("TREBOL", "JOTA"));
+        jugador.getManoEnJuego().agregarCarta(new Carta(CORAZON, QUINA));
+        jugador.getManoEnJuego().agregarCarta(new Carta(PICA, AS));
+        dealer.getManoEnJuego().agregarCarta(new Carta(TREBOL, JOTA));
 
         var ganador = juego.evaluarManoGanadora();
         assertEquals(jugador, ganador);
@@ -85,7 +87,7 @@ class AppTest {
     @DisplayName("Caso excepción donde la mano de jugador es nula")
     void verificarGanadorCasoManoJugadorNula() {
         Carta carta;
-        carta = new Carta("CORAZON", "QUINA");
+        carta = new Carta(CORAZON, QUINA);
         dealer.getManoEnJuego().agregarCarta(carta);
         Mano jugadorNulo = null;
         jugador.setManoEnJuego(jugadorNulo);
@@ -97,13 +99,13 @@ class AppTest {
     }
 
     @Test
-    @DisplayName("Caso excepción donde la carta dada contiene un valor inválido")
+    @DisplayName("Caso excepción donde la carta dada contiene un valor nulo")
     void verificarObtenerValorNumericoDeCartaEsNula() {
-        var exception = assertThrows(NoSuchElementException.class,
-                () -> new Carta("ESCUDO", "una carta de uno de corazone"),
+        var exception = assertThrows(NullPointerException.class,
+                () -> new Carta(CORAZON, null),
                 "Se ha ingresado una carta inválida");
-        logger.info("Se ha lanzado la excepción NoSuchElementException, dado " +
-                "que la carta dada es inválida. " + exception.getMessage());
+        logger.info("Se ha lanzado la excepción NullPointerException, dado " +
+                "que el valor carta dada es nulo. " + exception.getMessage());
     }
 
     @Test
@@ -138,9 +140,9 @@ class AppTest {
 
     @Test
     void verificaPartirManoTest() {
-        Carta primeraCarta = new Carta("CORAZON", "AS");
+        Carta primeraCarta = new Carta(CORAZON, AS);
         jugador.getManoEnJuego().agregarCarta(primeraCarta);
-        Carta segundaCarta = new Carta("PICA", "AS");
+        Carta segundaCarta = new Carta(PICA, AS);
         jugador.getManoEnJuego().agregarCarta(segundaCarta);
         jugador.partirMano();
         var manosJugador = jugador.getManos();
@@ -151,9 +153,9 @@ class AppTest {
     @Test
     void verificaEsManoPartibleTest() {
         Carta carta;
-        carta = new Carta("CORAZON", "AS");
+        carta = new Carta(CORAZON, AS);
         jugador.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("PICA", "AS");
+        carta = new Carta(PICA, AS);
         jugador.getManoEnJuego().agregarCarta(carta);
         assertTrue(jugador.getManoEnJuego().esManoPartible());
     }
@@ -161,9 +163,9 @@ class AppTest {
     @Test
     void verificaEsManoPartibleFallaCartasDesigualesTest() {
         Carta carta;
-        carta = new Carta("CORAZON", "AS");
+        carta = new Carta(CORAZON, AS);
         jugador.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("PICA", "DOS");
+        carta = new Carta(PICA, DOS);
         jugador.getManoEnJuego().agregarCarta(carta);
         assertFalse(jugador.getManoEnJuego().esManoPartible());
     }
@@ -171,11 +173,11 @@ class AppTest {
     @Test
     void verificaEsManoPartibleFallaMasDeDosCartasTest() {
         Carta carta;
-        carta = new Carta("CORAZON", "AS");
+        carta = new Carta(CORAZON, AS);
         jugador.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("PICA", "AS");
+        carta = new Carta(PICA, AS);
         jugador.getManoEnJuego().agregarCarta(carta);
-        carta = new Carta("TREBOL", "AS");
+        carta = new Carta(TREBOL, AS);
         jugador.getManoEnJuego().agregarCarta(carta);
         assertFalse(jugador.getManoEnJuego().esManoPartible());
     }

@@ -1,3 +1,6 @@
+import enums.Pinta;
+import enums.Valor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,12 +10,10 @@ public class Baraja {
     private final List<Carta> cartas;
 
     public Baraja() {
-        var pintas = List.of("CORAZON", "TREBOL", "DIAMANTE", "PICA");
-        var numerosCartas = List.of("AS", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER");
         cartas = new ArrayList<>();
 
-        for (String p : pintas) {
-            for (String n : numerosCartas) {
+        for (Pinta p : Pinta.getPintas()) {
+            for (Valor n : Valor.getValores()) {
                 Carta carta = new Carta();
                 carta.setPinta(p);
                 carta.setValor(n);

@@ -1,27 +1,28 @@
+import enums.Pinta;
+import enums.Valor;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Carta {
 
-    private final List<String> cartas = List.of("AS", "DOS", "TRES", "CUATRO", "CINCO",
-            "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ", "JOTA", "QUINA", "KAISER");
-    private String pinta;
+    private Pinta pinta;
     private Integer valorNumerico;
-    private String valor;
+    private Valor valor;
 
     public Carta() {}
 
-    public Carta(String pinta, String valor) {
+    public Carta(Pinta pinta, Valor valor) {
         setPinta(pinta);
         setValor(valor);
     }
 
-    public String getPinta() {
+    public Pinta getPinta() {
         return pinta;
     }
 
-    public void setPinta(String pinta) {
+    public void setPinta(Pinta pinta) {
+        if (!Pinta.getPintas().contains(pinta)) throw new NoSuchElementException();
         this.pinta = pinta;
     }
 
@@ -33,23 +34,23 @@ public class Carta {
         this.valorNumerico = valorNumerico;
     }
 
-    public String getValor() {
+    public Valor getValor() {
         return valor;
     }
 
-    public void setValor(String valor) {
-        if (!cartas.contains(valor)) throw new NoSuchElementException();
+    public void setValor(Valor valor) {
+        if (!Valor.getValores().contains(valor)) throw new NoSuchElementException();
         setValorNumerico(crearMapaDeValores().get(valor));
         this.valor = valor;
     }
 
-    public HashMap<String, Integer> crearMapaDeValores() {
-        HashMap<String, Integer> mapa = new HashMap<>();
+    public HashMap<Valor, Integer> crearMapaDeValores() {
+        HashMap<Valor, Integer> mapa = new HashMap<>();
         int valorCarta = 1;
 
-        for (String carta : cartas) {
+        for (Valor valor : Valor.getValores()) {
             if (valorCarta > 10) { valorCarta = 10; }
-            mapa.put(carta, valorCarta);
+            mapa.put(valor, valorCarta);
             valorCarta++;
         }
 
