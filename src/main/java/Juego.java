@@ -55,47 +55,10 @@ public class Juego {
         // Las opciones se van generando según la situación del jugador
         // LinkedList garantiza el orden de inserción de las opciones
         List<List<Runnable>> opciones = new LinkedList<>();
-
-        opciones.add(List.of(
-                () -> System.exit(0),
-                () -> System.out.println("para salir")));
-
-        if (jugador.getManos().size() == 1) {
-            opciones.add(List.of(
-                    this::pedirCartaAManoDeJugador,
-                    () -> System.out.println("para pedir carta")));
-        } else {
-            for (int indice = 0; indice < jugador.getManos().size(); indice++) {
-                String opcion = String.format("para pedir carta a tu %s° mano", indice + 1);
-                int finalIndice = indice;
-                opciones.add(List.of(
-                        () -> pedirCartaAManoDeJugador(finalIndice),
-                        () -> System.out.println(opcion)));
-            }
-        }
-
-        if (jugador.getManos().size() == 1) {
-            if (esManoJugadorPartible(jugador)) {
-                opciones.add(List.of(
-                        this::partirManoDeJugador,
-                        () -> System.out.println("para partir tu mano")));
-            }
-        } else {
-            for (int indice = 0; indice < jugador.getManos().size(); indice++) {
-                if (esManoJugadorPartible(jugador, indice)) {
-                    String opcion = String.format("para partir tu %s° mano", indice + 1);
-                    int finalIndice = indice;
-                    opciones.add(List.of(
-                            () -> partirManoDeJugador(finalIndice),
-                            () -> System.out.println(opcion)));
-                }
-            }
-        }
-
-        opciones.add(List.of(
-                this::bajarManosDeJugador,
-                () -> System.out.println("para bajarse")));
-
+        agregarOpcionSalida(opciones);
+        agregarOpcionesPedirCarta(opciones);
+        agregarOpcionesPartirCarta(opciones);
+        agregarOpcionBajarse(opciones);
         return opciones;
     }
 
@@ -115,7 +78,7 @@ public class Juego {
     }
 
     private void pedirCartaAManoDeJugador(Integer indiceMano) {
-        jugador.setManoEnJuego(jugador.getManos().get(indiceMano));
+        jugador.setManoEnJuego(indiceMano);
         baraja.pedirCarta(jugador);
     }
 
@@ -123,7 +86,7 @@ public class Juego {
         if (!esManoDealerBlackjack()) pedirCartasADealer();
         int cantidadDeManos = jugador.getManos().size();
         for (int indiceMano = 0; indiceMano < cantidadDeManos; indiceMano++) {
-            jugador.setManoEnJuego(jugador.getManos().get(indiceMano));
+            jugador.setManoEnJuego(indiceMano);
             mostrarMano(indiceMano);
             mostrarGanadorDeRonda(evaluarManoGanadora());
         }
@@ -135,8 +98,8 @@ public class Juego {
     }
 
     public boolean esManoJugadorPartible(Jugador jugador, Integer indiceMano) {
-        jugador.setManoEnJuego(jugador.getManos().get(indiceMano));
-        return jugador.getManoEnJuego().esManoPartible();
+        jugador.setManoEnJuego(indiceMano);
+        return esManoJugadorPartible(jugador);
     }
 
     private boolean existeManoPorJugar() {
@@ -148,7 +111,6 @@ public class Juego {
     }
 
     public Jugador evaluarManoGanadora() {
-
         if (jugador.getManoEnJuego().esBlackjack()) return jugador;
         if (dealer.getManoEnJuego().esBlackjack()) return dealer;
         if (dealer.getManoEnJuego().sePasoDe21()) return dealer;
@@ -203,8 +165,8 @@ public class Juego {
         partirManoDeJugador(0);
     }
 
-    public void partirManoDeJugador(Integer numero) {
-        jugador.setManoEnJuego(jugador.getManos().get(numero));
+    public void partirManoDeJugador(Integer indiceMano) {
+        jugador.setManoEnJuego(indiceMano);
         jugador.partirMano();
     }
 
@@ -221,6 +183,70 @@ public class Juego {
     private void repartir(Jugador jugador) {
         baraja.pedirCarta(jugador);
         baraja.pedirCarta(jugador);
+    }
+
+    private void agregarOpcionSalida(List<List<Runnable>> opciones) {
+        opciones.add(List.of(
+                () -> System.exit(0),
+                () -> System.out.println("para salir")));
+    }
+
+    private void agregarOpcionesPedirCarta(List<List<Runnable>> opciones) {
+        if (jugador.getManos().size() == 1) {
+            agregarOpcionPedirCartaSingular(opciones);
+        } else {
+            agregarOpcionPedirCartaMultiple(opciones);
+        }
+    }
+
+    private void agregarOpcionPedirCartaSingular(List<List<Runnable>> opciones) {
+        if (esManoJugadorPartible(jugador)) {
+            opciones.add(List.of(
+                    this::partirManoDeJugador,
+                    () -> System.out.println("para partir tu mano")));
+        }
+    }
+
+    private void agregarOpcionPedirCartaMultiple(List<List<Runnable>> opciones) {
+        for (int indice = 0; indice < jugador.getManos().size(); indice++) {
+            if (esManoJugadorPartible(jugador, indice)) {
+                String opcion = String.format("para partir tu %s° mano", indice + 1);
+                int finalIndice = indice;
+                opciones.add(List.of(
+                        () -> partirManoDeJugador(finalIndice),
+                        () -> System.out.println(opcion)));
+            }
+        }
+    }
+
+    private void agregarOpcionesPartirCarta(List<List<Runnable>> opciones) {
+        if (jugador.getManos().size() == 1) {
+            agregarOpcionPartirCartaSingular(opciones);
+        } else {
+            agregarOpcionPartirCartaMultiple(opciones);
+        }
+    }
+
+    private void agregarOpcionPartirCartaSingular(List<List<Runnable>> opciones) {
+        opciones.add(List.of(
+                this::pedirCartaAManoDeJugador,
+                () -> System.out.println("para pedir carta")));
+    }
+
+    private void agregarOpcionPartirCartaMultiple(List<List<Runnable>> opciones) {
+        for (int indice = 0; indice < jugador.getManos().size(); indice++) {
+            String opcion = String.format("para pedir carta a tu %s° mano", indice + 1);
+            int finalIndice = indice;
+            opciones.add(List.of(
+                    () -> pedirCartaAManoDeJugador(finalIndice),
+                    () -> System.out.println(opcion)));
+        }
+    }
+
+    private void agregarOpcionBajarse(List<List<Runnable>> opciones) {
+        opciones.add(List.of(
+                this::bajarManosDeJugador,
+                () -> System.out.println("para bajarse")));
     }
 
     @Override

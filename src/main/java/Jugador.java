@@ -42,6 +42,10 @@ public class Jugador {
         this.manoEnJuego = manoEnJuego;
     }
 
+    public void setManoEnJuego(Integer indiceMano) {
+        this.manoEnJuego = getManos().get(indiceMano);
+    }
+
     public boolean esDealer() {
         return esDealer;
     }
