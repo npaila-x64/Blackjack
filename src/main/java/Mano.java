@@ -82,7 +82,7 @@ public class Mano {
     }
 
     public boolean esManoPartible() {
-        if (totalCartas() > 2) return false;
+        if (totalCartas() != 2) return false;
         return obtenerPrimeraCarta().getValorNumerico() ==
                 obtenerSegundaCarta().getValorNumerico();
     }

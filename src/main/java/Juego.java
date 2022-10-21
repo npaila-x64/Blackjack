@@ -52,100 +52,102 @@ public class Juego {
     }
 
     private List<List<Runnable>> generarOpciones() {
-        // Las opciones se van generando según el contexto
-
-        List<List<Runnable>> opciones = new LinkedList<>(); //LinkedList garantiza el orden de inserción
+        // Las opciones se van generando según la situación del jugador
+        // LinkedList garantiza el orden de inserción de las opciones
+        List<List<Runnable>> opciones = new LinkedList<>();
 
         opciones.add(List.of(
                 () -> System.exit(0),
                 () -> System.out.println("para salir")));
 
-        opciones.add(List.of(
-                this::pedirCartaAJugador,
-                () -> System.out.println("para pedir carta")));
+        if (jugador.getManos().size() == 1) {
+            opciones.add(List.of(
+                    this::pedirCartaAManoDeJugador,
+                    () -> System.out.println("para pedir carta")));
+        } else {
+            for (int indice = 0; indice < jugador.getManos().size(); indice++) {
+                String opcion = String.format("para pedir carta a tu %s° mano", indice + 1);
+                int finalIndice = indice;
+                opciones.add(List.of(
+                        () -> pedirCartaAManoDeJugador(finalIndice),
+                        () -> System.out.println(opcion)));
+            }
+        }
+
+        if (jugador.getManos().size() == 1) {
+            if (esManoJugadorPartible(jugador)) {
+                opciones.add(List.of(
+                        this::partirManoDeJugador,
+                        () -> System.out.println("para partir tu mano")));
+            }
+        } else {
+            for (int indice = 0; indice < jugador.getManos().size(); indice++) {
+                if (esManoJugadorPartible(jugador, indice)) {
+                    String opcion = String.format("para partir tu %s° mano", indice + 1);
+                    int finalIndice = indice;
+                    opciones.add(List.of(
+                            () -> partirManoDeJugador(finalIndice),
+                            () -> System.out.println(opcion)));
+                }
+            }
+        }
 
         opciones.add(List.of(
-                this::bajarJugador,
+                this::bajarManosDeJugador,
                 () -> System.out.println("para bajarse")));
 
-        if (esManoJugadorPartible(jugador)) {
-            opciones.add(List.of(
-                    this::partirManoJugador,
-                    () -> System.out.println("para partir tu mano")));
-        }
         return opciones;
     }
 
     private void jugar() {
-        while (true) {
+        while (existeManoPorJugar()) {
             var opciones = generarOpciones();
-            mostrarManos();
+            mostrarManosConDealerEscondido();
             mostrarOpciones(opciones);
-            opciones.get(Utilidad.pedirOpcionHasta(opciones.size()))
+            opciones.get(Utils.pedirOpcionHasta(opciones.size()))
                     .get(0) // obtiene el método correspodiente a la acción que se desea realizar
                     .run();
         }
     }
 
-    private void pedirCartaAJugador() {
+    private void pedirCartaAManoDeJugador() {
+        pedirCartaAManoDeJugador(0);
+    }
+
+    private void pedirCartaAManoDeJugador(Integer indiceMano) {
+        jugador.setManoEnJuego(jugador.getManos().get(indiceMano));
         baraja.pedirCarta(jugador);
     }
 
-    private void bajarJugador() {
-        if (esManoDealerBlackjack()) {
-            mostrarGanador(dealer);
-            return;
+    private void bajarManosDeJugador() {
+        if (!esManoDealerBlackjack()) pedirCartasADealer();
+        int cantidadDeManos = jugador.getManos().size();
+        for (int indiceMano = 0; indiceMano < cantidadDeManos; indiceMano++) {
+            jugador.setManoEnJuego(jugador.getManos().get(indiceMano));
+            mostrarMano(indiceMano);
+            mostrarGanadorDeRonda(evaluarManoGanadora());
         }
-        realizarTurnoDeDealer();
-        procederABajarse();
+        jugador.eliminarManos();
     }
 
     public boolean esManoJugadorPartible(Jugador jugador) {
         return jugador.getManoEnJuego().esManoPartible();
     }
 
-    public void partirManoJugador() {
-        jugador.partirMano();
-        salirJuego:
-        while (true) {
-            mostrarManosConDobleMano();
-            switch (Utilidad.pedirOpcionHasta(3)) {
-                case 1 -> {
-                    jugador.setManoEnJuego(jugador.getManos().get(0));
-                    baraja.pedirCarta(jugador);}
-                case 2 -> {
-                    jugador.setManoEnJuego(jugador.getManos().get(1));
-                    baraja.pedirCarta(jugador);}
-                case 3 -> {
-                    if (esManoDealerBlackjack()) break salirJuego;
-                    realizarTurnoDeDealer();
-                    procederABajarse();
-                    break salirJuego;
-                }
-            }
-        }
+    public boolean esManoJugadorPartible(Jugador jugador, Integer indiceMano) {
+        jugador.setManoEnJuego(jugador.getManos().get(indiceMano));
+        return jugador.getManoEnJuego().esManoPartible();
     }
 
-    public void procederABajarse() {
-        var manoGanadora = bajarse();
-        mostrarGanador(manoGanadora);
+    private boolean existeManoPorJugar() {
+        return !jugador.getManos().isEmpty();
     }
 
     public boolean esManoDealerBlackjack() {
         return dealer.getManoEnJuego().esBlackjack();
     }
 
-    public Jugador bajarse() throws NullPointerException {
-        System.out.println("La mano del dealer es: ");
-        dealer.getManoEnJuego().mostrarMano();
-        System.out.println("\nTu mano es: ");
-        jugador.getManoEnJuego().mostrarMano();
-
-        Jugador jugadorGanador = verificarGanador();
-        return jugadorGanador;
-    }
-
-    public Jugador verificarGanador() {
+    public Jugador evaluarManoGanadora() {
 
         if (jugador.getManoEnJuego().esBlackjack()) return jugador;
         if (dealer.getManoEnJuego().esBlackjack()) return dealer;
@@ -156,16 +158,15 @@ public class Juego {
                 jugador : dealer;
     }
 
-    public void mostrarGanador(Jugador ganador) {
+    public void mostrarGanadorDeRonda(Jugador ganador) {
         if (ganador.equals(jugador)) {
-            System.out.println("¡¡Ganaste esta ronda!! :)))");
+            System.out.println("¡¡Ganaste esta ronda!! :)))\n");
         } else {
-            System.out.println("¡¡Perdiste esta ronda!! :(((");
+            System.out.println("¡¡Perdiste esta ronda!! :(((\n");
         }
-        System.out.println();
     }
 
-    public void realizarTurnoDeDealer() {
+    public void pedirCartasADealer() {
         // CPU simple basado en una estrategia simple,
         // pedir cartas mientras que el total de su mano sea menor a 16
         while (dealer.getManoEnJuego().calcularSumaDeMano() < 16) {
@@ -173,44 +174,48 @@ public class Juego {
         }
     }
 
-    private void mostrarManos() {
+    private void mostrarManosConDealerEscondido() {
         System.out.println("La mano del dealer es: ");
         dealer.getManoEnJuego().mostrarConCartaEscondida();
-        System.out.println("\nTu mano es: ");
-        jugador.getManoEnJuego().mostrarMano();
+        mostrarManosDeJugador();
     }
 
-    private void mostrarManosConDobleMano() {
+    private void mostrarMano(Integer indiceMano) {
         System.out.println("La mano del dealer es: ");
-        dealer.getManoEnJuego().mostrarConCartaEscondida();
-        System.out.println("\nTu primera mano es: ");
-        jugador.setManoEnJuego(jugador.getManos().get(0));
-        jugador.getManoEnJuego().mostrarMano();
-        System.out.println("\nTu segunda mano es: ");
-        jugador.setManoEnJuego(jugador.getManos().get(1));
-        jugador.getManoEnJuego().mostrarMano();
-        System.out.println();
-        mostrarPedirOpcionDobleMano();
+        dealer.getManoEnJuego().mostrarMano();
+        System.out.printf("\nTu %s° mano es: \n", indiceMano + 1);
+        jugador.getManos().get(indiceMano).mostrarMano();
+    }
+
+    private void mostrarManosDeJugador() {
+        if (jugador.getManos().size() == 1) {
+            System.out.println("\nTu mano es: ");
+            jugador.getManoEnJuego().mostrarMano();
+        } else {
+            for (int indice = 0; indice < jugador.getManos().size(); indice++) {
+                System.out.printf("\nTu %s° mano es: \n", indice + 1);
+                jugador.getManos().get(indice).mostrarMano();
+            }
+        }
+    }
+
+    public void partirManoDeJugador() {
+        partirManoDeJugador(0);
+    }
+
+    public void partirManoDeJugador(Integer numero) {
+        jugador.setManoEnJuego(jugador.getManos().get(numero));
+        jugador.partirMano();
     }
 
     public void mostrarOpciones(List<List<Runnable>> opciones) {
         System.out.println("\nEscriba");
-        for (List<Runnable> opcion : opciones) {
-            System.out.printf("(%s) ", opciones.indexOf(opcion));
-            opcion.get(1)
+        for (int indice = 1; indice < opciones.size(); indice++) {
+            System.out.printf("(%s) ", opciones.indexOf(opciones.get(indice)));
+            opciones.get(indice).get(1)
                     .run();
         }
         System.out.print("> ");
-    }
-
-    public void mostrarPedirOpcionDobleMano() {
-        System.out.print("""
-            
-            Escriba
-            (1) para pedir carta a tu primera mano
-            (2) para pedir carta a tu segunda mano
-            (3) para bajarse
-            """.concat("> "));
     }
 
     private void repartir(Jugador jugador) {

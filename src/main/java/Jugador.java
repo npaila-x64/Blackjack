@@ -51,7 +51,7 @@ public class Jugador {
     }
 
     public List<Mano> getManos() {
-        return manos;
+        return new ArrayList<>(manos);
     }
 
     public void partirMano() {
@@ -67,6 +67,12 @@ public class Jugador {
 
     private void eliminarManoDeJuego(Mano mano) {
         this.manos.remove(mano);
+    }
+
+    public void eliminarManos() {
+        for (Mano mano : this.manos) {
+            eliminarManoDeJuego(mano);
+        }
     }
 
     @Override

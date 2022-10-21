@@ -1,7 +1,7 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Utilidad {
+public class Utils {
 
     private static int pedirValor() throws InputMismatchException {
         return new Scanner(System.in).nextInt();
