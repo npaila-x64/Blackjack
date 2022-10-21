@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Juego {
 
@@ -154,10 +155,9 @@ public class Juego {
             System.out.println("\nTu mano es: ");
             jugador.getManoEnJuego().mostrarMano();
         } else {
-            for (int indice = 0; indice < jugador.getManos().size(); indice++) {
-                System.out.printf("\nTu %s° mano es: \n", indice + 1);
-                jugador.getManos().get(indice).mostrarMano();
-            }
+            IntStream.range(0, jugador.getManos().size())
+                    .peek(indice -> System.out.printf("\nTu %s° mano es: \n", indice + 1))
+                    .forEach(indice -> jugador.getManos().get(indice).mostrarMano());
         }
     }
 
@@ -172,11 +172,9 @@ public class Juego {
 
     public void mostrarOpciones(List<List<Runnable>> opciones) {
         System.out.println("\nEscriba");
-        for (int indice = 1; indice < opciones.size(); indice++) {
-            System.out.printf("(%s) ", opciones.indexOf(opciones.get(indice)));
-            opciones.get(indice).get(1)
-                    .run();
-        }
+        IntStream.range(1, opciones.size())
+                .peek(indice -> System.out.printf("[%s] ", indice))
+                .forEach(indice -> opciones.get(indice).get(1).run());
         System.out.print("> ");
     }
 
