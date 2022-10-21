@@ -44,7 +44,7 @@ public class Mano {
 
     public boolean esBlackjack() {
 
-        if (totalCartas() == 0 || totalCartas() > 2) {
+        if (totalCartas() != 2) {
             return false;
         }
 
