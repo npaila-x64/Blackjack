@@ -3,10 +3,6 @@ import java.util.Scanner;
 
 public class Utils {
 
-    private static int pedirValor() throws InputMismatchException {
-        return new Scanner(System.in).nextInt();
-    }
-
     public static int pedirOpcionHasta(int limite) {
         try {
             return pedirValorEnteroEnIntervalo(limite);
@@ -21,6 +17,7 @@ public class Utils {
         if (valor < 0 || valor > limite) {
             throw new InputMismatchException("El parámetro dado sobrepasa el límite");
         }
+        System.out.println();
         return valor;
     }
 

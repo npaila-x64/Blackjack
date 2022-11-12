@@ -1,4 +1,2 @@
-2022/10/21 00:29:56 [INFO]Se ha lanzado la excepción IndexOutOfBoundsException, dado que la baraja estaba vacía cuando se le pidío una carta. Index 0 out of bounds for length 0
-2022/10/21 00:29:56 [INFO]Se ha lanzado la excepción NoSuchElementException, dado que la mano dada es nula. Index 0 out of bounds for length 0
-2022/10/21 00:29:56 [INFO]Se ha lanzado la excepción NullPointerException, dado que la mano del jugador estaba nulo. Cannot invoke "Mano.esBlackjack()" because the return value of "Jugador.getManoEnJuego()" is null
-2022/10/21 00:29:56 [INFO]Se ha lanzado la excepción NoSuchElementException, dado que la opción dada es inválida. null
+2022/11/11 21:26:03 [INFO]Se ha lanzado la excepción NullPointerException, dado que el valor carta dada es nulo. null
+2022/11/11 21:26:03 [INFO]Se ha lanzado la excepción NoSuchElementException, dado que la opción dada es inválida. null

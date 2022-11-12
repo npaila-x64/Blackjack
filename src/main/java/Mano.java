@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Mano {
 
-    private List<Carta> cartas;
+    private final List<Carta> cartas;
 
     public Mano() {
         cartas = new ArrayList<>();
@@ -95,8 +95,7 @@ public class Mano {
         return cartas.get(1);
     }
 
-    @Override
-    public String toString() {
-        return cartas.toString();
+    @Override public String toString() {
+        return String.format("[Mano: cantidadDeCartas=%s]", cartas.size());
     }
 }

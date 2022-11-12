@@ -57,8 +57,7 @@ public class Carta {
         return mapa;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s %s %s", pinta, valor, valorNumerico);
+    @Override public String toString() {
+        return String.format("[Carta: pinta=%s, valor=%s, valorNumerico=%s]", pinta, valor, valorNumerico);
     }
 }

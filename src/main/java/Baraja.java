@@ -33,12 +33,11 @@ public class Baraja {
         cartas.remove(carta);
     }
 
-    @Override
-    public String toString() {
-        return cartas.toString();
-    }
-
     public Integer size() {
         return cartas.size();
+    }
+
+    @Override public String toString() {
+        return String.format("[Baraja: cantidadDeCartas=%s]", size());
     }
 }
