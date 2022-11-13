@@ -22,7 +22,6 @@ public class Carta {
     }
 
     public void setPinta(Pinta pinta) {
-        if (!Pinta.getPintas().contains(pinta)) throw new NoSuchElementException();
         this.pinta = pinta;
     }
 

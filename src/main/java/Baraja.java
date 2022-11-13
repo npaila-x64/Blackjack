@@ -1,5 +1,4 @@
-import enums.Pinta;
-import enums.Valor;
+import enums.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,12 +6,16 @@ import java.util.List;
 
 public class Baraja {
 
+    TipoDePinta tipoDeCarta;
+
     private final List<Carta> cartas;
 
-    public Baraja() {
+    public Baraja(TipoDePinta tipoDeCarta) {
+        this.tipoDeCarta = tipoDeCarta;
+
         cartas = new ArrayList<>();
 
-        for (Pinta p : Pinta.getPintas()) {
+        for (Pinta p : Pinta.fromTipoDeCarta(tipoDeCarta)) {
             for (Valor n : Valor.getValores()) {
                 Carta carta = new Carta();
                 carta.setPinta(p);

@@ -1,10 +1,11 @@
+import enums.TipoDePinta;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.NoSuchElementException;
-import static enums.Pinta.*;
+import static enums.PintaInglesa.*;
 import static enums.Valor.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,7 +105,7 @@ class AppTest {
     @Test
     @DisplayName("Caso excepción donde se pide una carta de una baraja vacía")
     void verificaPedirCartaCasoBarajaVacia() {
-        baraja = new Baraja();
+        baraja = new Baraja(TipoDePinta.INGLESA);
         var tamanioBaraja = baraja.size();
         for (int indice = 0; indice < tamanioBaraja; indice++) {
             baraja.pedirCarta(blackjack.obtenerJugadorEnJuego());

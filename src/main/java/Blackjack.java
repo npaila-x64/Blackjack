@@ -1,3 +1,5 @@
+import enums.TipoDePinta;
+
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -11,7 +13,7 @@ public class Blackjack extends JuegoDeCarta {
     public static Blackjack crearNuevoJuego() {
         List<Jugador> jugadores = new LinkedList<>();
         jugadores.add(Jugador.crearDealer());
-        Blackjack blackjack = new Blackjack(new Baraja(), jugadores);
+        Blackjack blackjack = new Blackjack(new Baraja(TipoDePinta.ESPANOLA), jugadores);
         blackjack.getBaraja().barajar();
         return blackjack;
     }

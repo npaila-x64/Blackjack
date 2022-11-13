@@ -1,11 +1,18 @@
 package enums;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public enum Pinta {
-    CORAZON, TREBOL, DIAMANTE, PICA;
+public interface Pinta {
 
-    public static List<Pinta> getPintas() {
-        return List.of(CORAZON, TREBOL, DIAMANTE, PICA);
+    TipoDePinta getTipoDePinta();
+
+    static Set<Pinta> fromTipoDeCarta(TipoDePinta tipoDeCarta) {
+        return Stream.of(List.of(PintaEspanola.values()), List.of(PintaInglesa.values()))
+                .flatMap(List::stream)
+                .filter(card -> card.getTipoDePinta().equals(tipoDeCarta))
+                .collect(Collectors.toSet());
     }
 }
