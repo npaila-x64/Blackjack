@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class Blackjack {
+public class Blackjack implements JuegoDeCarta {
 
     private Baraja baraja;
     private List<Jugador> jugadores;
@@ -21,6 +21,7 @@ public class Blackjack {
         return blackjack;
     }
 
+    @Override
     public void jugar() {
         mostrarTitulo();
         repartirCartas();
