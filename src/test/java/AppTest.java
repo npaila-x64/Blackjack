@@ -1,4 +1,4 @@
-import enums.TipoDePinta;
+import enums.TipoDeCarta;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.*;
 
@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.NoSuchElementException;
 import static enums.PintaInglesa.*;
-import static enums.Valor.*;
+import static enums.ValorIngles.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,13 +48,13 @@ class AppTest {
     @Test
     void verificaQueDealerEsGanador() {
         Carta carta;
-        carta = new Carta(PICA, QUINA);
+        carta = new Carta(PICA, QUINA, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(TREBOL, JOTA);
+        carta = new Carta(TREBOL, JOTA, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(PICA, QUINA);
+        carta = new Carta(PICA, QUINA, TipoDeCarta.INGLESA);
         blackjack.obtenerDealer().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(PICA, AS);
+        carta = new Carta(PICA, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerDealer().getManoEnJuego().agregarCarta(carta);
 
         var ganador = blackjack.evaluarManoGanadora();
@@ -63,9 +63,9 @@ class AppTest {
 
     @Test
     void verificaQueManoJugadorEsBlackjack() {
-        blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(new Carta(CORAZON, QUINA));
-        blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(new Carta(PICA, AS));
-        blackjack.obtenerDealer().getManoEnJuego().agregarCarta(new Carta(TREBOL, JOTA));
+        blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(new Carta(CORAZON, QUINA, TipoDeCarta.INGLESA));
+        blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(new Carta(PICA, AS, TipoDeCarta.INGLESA));
+        blackjack.obtenerDealer().getManoEnJuego().agregarCarta(new Carta(TREBOL, JOTA, TipoDeCarta.INGLESA));
 
         var ganador = blackjack.evaluarManoGanadora();
         assertEquals(blackjack.obtenerJugadorEnJuego(), ganador);
@@ -96,7 +96,7 @@ class AppTest {
     @DisplayName("Caso excepción donde la carta dada contiene un valor nulo")
     void verificarObtenerValorNumericoDeCartaEsNula() {
         var exception = assertThrows(NullPointerException.class,
-                () -> new Carta(CORAZON, null),
+                () -> new Carta(CORAZON, null, TipoDeCarta.INGLESA),
                 "Se ha ingresado una carta inválida");
         logger.info("Se ha lanzado la excepción NullPointerException, dado " +
                 "que el valor carta dada es nulo. " + exception.getMessage());
@@ -105,7 +105,7 @@ class AppTest {
     @Test
     @DisplayName("Caso excepción donde se pide una carta de una baraja vacía")
     void verificaPedirCartaCasoBarajaVacia() {
-        baraja = new Baraja(TipoDePinta.INGLESA);
+        baraja = new Baraja(TipoDeCarta.INGLESA);
         var tamanioBaraja = baraja.size();
         for (int indice = 0; indice < tamanioBaraja; indice++) {
             baraja.pedirCarta(blackjack.obtenerJugadorEnJuego());
@@ -134,9 +134,9 @@ class AppTest {
 
     @Test
     void verificaPartirManoTest() {
-        Carta primeraCarta = new Carta(CORAZON, AS);
+        Carta primeraCarta = new Carta(CORAZON, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(primeraCarta);
-        Carta segundaCarta = new Carta(PICA, AS);
+        Carta segundaCarta = new Carta(PICA, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(segundaCarta);
         blackjack.obtenerJugadorEnJuego().partirMano();
         var manosJugador = blackjack.obtenerJugadorEnJuego().getManos();
@@ -147,9 +147,9 @@ class AppTest {
     @Test
     void verificaEsManoPartibleTest() {
         Carta carta;
-        carta = new Carta(CORAZON, AS);
+        carta = new Carta(CORAZON, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(PICA, AS);
+        carta = new Carta(PICA, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
         assertTrue(blackjack.obtenerJugadorEnJuego().getManoEnJuego().esManoPartible());
     }
@@ -157,9 +157,9 @@ class AppTest {
     @Test
     void verificaEsManoPartibleFallaCartasDesigualesTest() {
         Carta carta;
-        carta = new Carta(CORAZON, AS);
+        carta = new Carta(CORAZON, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(PICA, DOS);
+        carta = new Carta(PICA, DOS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
         assertFalse(blackjack.obtenerJugadorEnJuego().getManoEnJuego().esManoPartible());
     }
@@ -167,11 +167,11 @@ class AppTest {
     @Test
     void verificaEsManoPartibleFallaMasDeDosCartasTest() {
         Carta carta;
-        carta = new Carta(CORAZON, AS);
+        carta = new Carta(CORAZON, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(PICA, AS);
+        carta = new Carta(PICA, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
-        carta = new Carta(TREBOL, AS);
+        carta = new Carta(TREBOL, AS, TipoDeCarta.INGLESA);
         blackjack.obtenerJugadorEnJuego().getManoEnJuego().agregarCarta(carta);
         assertFalse(blackjack.obtenerJugadorEnJuego().getManoEnJuego().esManoPartible());
     }

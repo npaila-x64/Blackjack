@@ -4,10 +4,15 @@ public enum PintaEspanola implements Pinta {
     ORO,
     COPA,
     ESPADA,
-    BASTO;
+    BASTO,
+    JOKER;
 
     @Override
-    public TipoDePinta getTipoDePinta() {
-        return TipoDePinta.ESPANOLA;
+    public TipoDeCarta getTipoDePinta() {
+        return TipoDeCarta.ESPANOLA;
+    }
+
+    public static PintaEspanola[] pintas() {
+        return new PintaEspanola[]{ORO, COPA, ESPADA, BASTO};
     }
 }

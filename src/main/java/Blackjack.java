@@ -1,9 +1,11 @@
-import enums.TipoDePinta;
+import enums.TipoDeCarta;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
 public class Blackjack extends JuegoDeCarta {
+
+    private Blackjack() {}
 
     private Blackjack(Baraja baraja, List<Jugador> jugadores) {
         this.baraja = baraja;
@@ -13,7 +15,9 @@ public class Blackjack extends JuegoDeCarta {
     public static Blackjack crearNuevoJuego() {
         List<Jugador> jugadores = new LinkedList<>();
         jugadores.add(Jugador.crearDealer());
-        Blackjack blackjack = new Blackjack(new Baraja(TipoDePinta.ESPANOLA), jugadores);
+        BarajaBuilder barajaBuilder = new BarajaBuilder(TipoDeCarta.INGLESA);
+        barajaBuilder.crearMazo();
+        Blackjack blackjack = new Blackjack(barajaBuilder.construir(), jugadores);
         blackjack.getBaraja().barajar();
         return blackjack;
     }
@@ -34,7 +38,6 @@ public class Blackjack extends JuegoDeCarta {
             jugarManosDeJugador();
         }
     }
-
 
     private void bajarJugadores() {
         if (!esManoDealerBlackjack()) pedirCartasADealer();

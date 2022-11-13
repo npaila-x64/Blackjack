@@ -1,20 +1,29 @@
-import enums.Pinta;
-import enums.Valor;
+import enums.*;
 
-import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 public class Carta {
 
     private Pinta pinta;
     private Integer valorNumerico;
+    private TipoDeCarta tipoDeCarta;
     private Valor valor;
 
     public Carta() {}
 
-    public Carta(Pinta pinta, Valor valor) {
-        setPinta(pinta);
-        setValor(valor);
+    public static Carta crearJoker(TipoDeCarta tipoDeCarta) {
+        Carta joker = new Carta();
+        joker.setTipoDeCarta(tipoDeCarta);
+        joker.setPinta(Pinta.getJoker(tipoDeCarta));
+        joker.setValor(Valor.getCero(tipoDeCarta));
+        return joker;
+    }
+
+    public Carta(Pinta pinta, Valor valor, TipoDeCarta tipoDeCarta) {
+        this.pinta = pinta;
+        this.valor = valor;
+        this.valorNumerico = valor.getValorNumerico();
+        this.tipoDeCarta = tipoDeCarta;
     }
 
     public Pinta getPinta() {
@@ -29,8 +38,8 @@ public class Carta {
         return valorNumerico;
     }
 
-    private void setValorNumerico(Integer valorNumerico) {
-        this.valorNumerico = valorNumerico;
+    public void setTipoDeCarta(TipoDeCarta tipoDeCarta) {
+        this.tipoDeCarta = tipoDeCarta;
     }
 
     public Valor getValor() {
@@ -38,25 +47,13 @@ public class Carta {
     }
 
     public void setValor(Valor valor) {
-        if (!Valor.getValores().contains(valor)) throw new NoSuchElementException();
-        setValorNumerico(crearMapaDeValores().get(valor));
+        if (!Valor.fromTipoDeCarta(tipoDeCarta).contains(valor)) throw new NoSuchElementException();
         this.valor = valor;
-    }
-
-    public HashMap<Valor, Integer> crearMapaDeValores() {
-        HashMap<Valor, Integer> mapa = new HashMap<>();
-        int valorCarta = 1;
-
-        for (Valor valor : Valor.getValores()) {
-            if (valorCarta > 10) { valorCarta = 10; }
-            mapa.put(valor, valorCarta);
-            valorCarta++;
-        }
-
-        return mapa;
+        this.valorNumerico = valor.getValorNumerico();
     }
 
     @Override public String toString() {
-        return String.format("[Carta: pinta=%s, valor=%s, valorNumerico=%s]", pinta, valor, valorNumerico);
+        return String.format("[Carta: tipoDeCarta=%s, pinta=%s, valor=%s, valorNumerico=%s]",
+                tipoDeCarta, pinta, valor, valorNumerico);
     }
 }

@@ -1,4 +1,4 @@
-import enums.TipoDePinta;
+import enums.TipoDeCarta;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,8 +13,7 @@ public class Carioca extends JuegoDeCarta {
 
     public static Carioca crearNuevoJuego() {
         List<Jugador> jugadores = new LinkedList<>();
-        jugadores.add(Jugador.crearDealer());
-        Carioca carioca = new Carioca(new Baraja(TipoDePinta.ESPANOLA), jugadores);
+        Carioca carioca = new Carioca(new Baraja(TipoDeCarta.ESPANOLA), jugadores);
         carioca.getBaraja().barajar();
         return carioca;
     }

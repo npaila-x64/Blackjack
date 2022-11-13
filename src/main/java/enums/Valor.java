@@ -1,15 +1,28 @@
 package enums;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public enum Valor {
-    AS, DOS, TRES, CUATRO, CINCO,
-    SEIS, SIETE, OCHO, NUEVE, DIEZ,
-    JOTA, QUINA, KAISER;
+public interface Valor {
 
-    public static List<Valor> getValores() {
-        return List.of(AS, DOS, TRES, CUATRO, CINCO,
-                SEIS, SIETE, OCHO, NUEVE, DIEZ,
-                JOTA, QUINA, KAISER);
+    Integer getValorNumerico();
+    TipoDeCarta getTipoDeCarta();
+
+    static Valor getCero(TipoDeCarta tipoDeCarta) {
+        switch (tipoDeCarta) {
+            case ESPANOLA -> {return ValorEspanol.CERO;}
+            case INGLESA -> {return ValorIngles.CERO;}
+            default -> throw new NoSuchElementException();
+        }
+    }
+
+    static Set<Valor> fromTipoDeCarta(TipoDeCarta tipoDeCarta) {
+        return Stream.of(List.of(ValorEspanol.valores()), List.of(ValorIngles.valores()))
+                .flatMap(List::stream)
+                .filter(valor -> valor.getTipoDeCarta().equals(tipoDeCarta))
+                .collect(Collectors.toSet());
     }
 }

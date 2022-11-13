@@ -6,23 +6,27 @@ import java.util.List;
 
 public class Baraja {
 
-    TipoDePinta tipoDeCarta;
+    private TipoDeCarta tipoDeCarta;
+    private List<Carta> cartas;
 
-    private final List<Carta> cartas;
-
-    public Baraja(TipoDePinta tipoDeCarta) {
+    public Baraja(TipoDeCarta tipoDeCarta) {
         this.tipoDeCarta = tipoDeCarta;
-
         cartas = new ArrayList<>();
+        crearMazo();
+    }
 
-        for (Pinta p : Pinta.fromTipoDeCarta(tipoDeCarta)) {
-            for (Valor n : Valor.getValores()) {
-                Carta carta = new Carta();
-                carta.setPinta(p);
-                carta.setValor(n);
-                cartas.add(carta);
+    private List<Carta> crearMazo() {
+        for (Pinta pinta : Pinta.fromTipoDeCarta(tipoDeCarta)) {
+            for (Valor valor : Valor.fromTipoDeCarta(tipoDeCarta)) {
+                cartas.add(new Carta(pinta, valor, tipoDeCarta));
             }
         }
+        return cartas;
+    }
+
+    public Baraja(BarajaBuilder builder) {
+        tipoDeCarta = builder.getTipoDeCarta();
+        cartas = builder.getCartas();
     }
 
     public void barajar() {
@@ -41,6 +45,6 @@ public class Baraja {
     }
 
     @Override public String toString() {
-        return String.format("[Baraja: cantidadDeCartas=%s]", size());
+        return String.format("[Baraja: cantidadDeCartas=%s, tipoDePinta=%s]", size(), tipoDeCarta);
     }
 }

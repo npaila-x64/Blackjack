@@ -1,6 +1,6 @@
 package enums;
 
-public enum TipoDePinta {
+public enum TipoDeCarta {
     INGLESA,
     ESPANOLA
 }
