@@ -1,19 +1,20 @@
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class Blackjack extends JuegoDeCarta {
+public class Carioca extends JuegoDeCarta {
 
-    private Blackjack(Baraja baraja, List<Jugador> jugadores) {
+    private Carioca(Baraja baraja, List<Jugador> jugadores) {
         this.baraja = baraja;
         this.jugadores = jugadores;
     }
 
-    public static Blackjack crearNuevoJuego() {
+    public static Carioca crearNuevoJuego() {
         List<Jugador> jugadores = new LinkedList<>();
         jugadores.add(Jugador.crearDealer());
-        Blackjack blackjack = new Blackjack(new Baraja(), jugadores);
-        blackjack.getBaraja().barajar();
-        return blackjack;
+        Carioca carioca = new Carioca(new Baraja(), jugadores);
+        carioca.getBaraja().barajar();
+        return carioca;
     }
 
     @Override
@@ -32,7 +33,6 @@ public class Blackjack extends JuegoDeCarta {
             jugarManosDeJugador();
         }
     }
-
 
     private void bajarJugadores() {
         if (!esManoDealerBlackjack()) pedirCartasADealer();
@@ -106,17 +106,15 @@ public class Blackjack extends JuegoDeCarta {
 
     private void mostrarTitulo() {
         System.out.println(
-               " /$$$$$$$  /$$                     /$$                               /$$      \n" +
-               "| $$__  $$| $$                    | $$                              | $$      \n" +
-               "| $$  \\ $$| $$  /$$$$$$   /$$$$$$$| $$   /$$ /$$  /$$$$$$   /$$$$$$$| $$   /$$\n" +
-               "| $$$$$$$ | $$ |____  $$ /$$_____/| $$  /$$/|__/ |____  $$ /$$_____/| $$  /$$/\n" +
-               "| $$__  $$| $$  /$$$$$$$| $$      | $$$$$$/  /$$  /$$$$$$$| $$      | $$$$$$/ \n" +
-               "| $$  \\ $$| $$ /$$__  $$| $$      | $$_  $$ | $$ /$$__  $$| $$      | $$_  $$ \n" +
-               "| $$$$$$$/| $$|  $$$$$$$|  $$$$$$$| $$ \\  $$| $$|  $$$$$$$|  $$$$$$$| $$ \\  $$\n" +
-               "|_______/ |__/ \\_______/ \\_______/|__/  \\__/| $$ \\_______/ \\_______/|__/  \\__/\n" +
-               "                                       /$$  | $$                              \n" +
-               "                                      |  $$$$$$/                              \n" +
-               "                                       \\______/                              ");
+                " ____                                                    \n" +
+                "/\\  _`\\                    __                            \n" +
+                "\\ \\ \\/\\_\\     __     _ __ /\\_\\    ___     ___     __     \n" +
+                " \\ \\ \\/_/_  /'__`\\  /\\`'__\\/\\ \\  / __`\\  /'___\\ /'__`\\   \n" +
+                "  \\ \\ \\L\\ \\/\\ \\L\\.\\_\\ \\ \\/ \\ \\ \\/\\ \\L\\ \\/\\ \\__//\\ \\L\\.\\_ \n" +
+                "   \\ \\____/\\ \\__/.\\_\\\\ \\_\\  \\ \\_\\ \\____/\\ \\____\\ \\__/.\\_\\\n" +
+                "    \\/___/  \\/__/\\/_/ \\/_/   \\/_/\\/___/  \\/____/\\/__/\\/_/\n" +
+                "                                                         \n" +
+                "                                                         \n");
     }
 
     private List<List<Runnable>> generarOpciones() {
@@ -197,6 +195,17 @@ public class Blackjack extends JuegoDeCarta {
         mostrarManosDeJugador();
     }
 
+    public Jugador obtenerDealer() {
+        return jugadores.stream()
+                .filter(Jugador::esDealer)
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public Jugador obtenerJugadorEnJuego() {
+        return jugadores.get(jugadorEnJuego);
+    }
+
     private void mostrarManoDeDealer() {
         System.out.println("La mano del dealer es: ");
         obtenerDealer().getManoEnJuego().mostrarMano();
@@ -237,13 +246,6 @@ public class Blackjack extends JuegoDeCarta {
                 .peek(indice -> System.out.printf("[%s] ", indice))
                 .forEach(indice -> opciones.get(indice).get(1).run());
         System.out.print("> ");
-    }
-
-    public Jugador obtenerDealer() {
-        return jugadores.stream()
-                .filter(Jugador::esDealer)
-                .findFirst()
-                .orElseThrow();
     }
 
     @Override

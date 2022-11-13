@@ -1,7 +1,7 @@
-public class Controlador {
+public class Casino {
 
     public void iniciar() {
-        Blackjack blackjack = Blackjack.crearNuevoJuego();
+        JuegoDeCarta blackjack = Blackjack.crearNuevoJuego();
 
         Jugador jugador1 = Jugador.crearJugador();
         jugador1.agregarAMonto(500);
