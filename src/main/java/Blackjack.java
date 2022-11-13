@@ -16,7 +16,7 @@ public class Blackjack extends JuegoDeCarta {
         List<Jugador> jugadores = new LinkedList<>();
         jugadores.add(Jugador.crearDealer());
         BarajaBuilder barajaBuilder = new BarajaBuilder(TipoDeCarta.INGLESA);
-        barajaBuilder.crearMazo();
+        barajaBuilder.agregarMazo();
         Blackjack blackjack = new Blackjack(barajaBuilder.construir(), jugadores);
         blackjack.getBaraja().barajar();
         return blackjack;
@@ -25,10 +25,16 @@ public class Blackjack extends JuegoDeCarta {
     @Override
     public void jugar() {
         mostrarTitulo();
-        repartirCartas();
         realizarApuestas();
+        repartirCartas();
         realizarTurnosDeJugadores();
         bajarJugadores();
+    }
+
+    private void repartirCartas() {
+        for (Jugador jugador : jugadores) {
+            repartir(jugador);
+        }
     }
 
     private void realizarTurnosDeJugadores() {
@@ -251,8 +257,7 @@ public class Blackjack extends JuegoDeCarta {
                 .orElseThrow();
     }
 
-    @Override
-    protected void repartir(Jugador jugador) {
+    private void repartir(Jugador jugador) {
         baraja.pedirCarta(jugador);
         baraja.pedirCarta(jugador);
     }

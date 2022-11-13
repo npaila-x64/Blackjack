@@ -6,6 +6,9 @@ import java.util.stream.IntStream;
 
 public class Carioca extends JuegoDeCarta {
 
+    private Integer numeroPartida = 0;
+    private Integer numeroDePartidas = 1;
+
     private Carioca(Baraja baraja, List<Jugador> jugadores) {
         this.baraja = baraja;
         this.jugadores = jugadores;
@@ -13,18 +16,42 @@ public class Carioca extends JuegoDeCarta {
 
     public static Carioca crearNuevoJuego() {
         List<Jugador> jugadores = new LinkedList<>();
-        Carioca carioca = new Carioca(new Baraja(TipoDeCarta.ESPANOLA), jugadores);
-        carioca.getBaraja().barajar();
+        BarajaBuilder barajaBuilder = new BarajaBuilder(TipoDeCarta.INGLESA);
+        barajaBuilder.agregarMazo();
+        barajaBuilder.agregarMazo();
+        barajaBuilder.agregarDosJokers();
+        barajaBuilder.agregarDosJokers();
+        Carioca carioca = new Carioca(barajaBuilder.construir(), jugadores);
         return carioca;
     }
 
     @Override
     public void jugar() {
         mostrarTitulo();
-        repartirCartas();
         realizarApuestas();
-        realizarTurnosDeJugadores();
-        bajarJugadores();
+        reiniciarConteoPartida();
+        while (haySiguientePartida()) {
+            this.siguientePartida();
+            getBaraja().barajar();
+            repartirCartas();
+            realizarTurnosDeJugadores();
+        }
+        evaluarApuesta();
+    }
+
+    private void repartirCartas() {
+        while (haySiguienteJugador()) {
+            this.siguienteJugador();
+            switch (numeroPartida) {
+                case 1 -> repartir(6);
+                case 2 -> repartir(7);
+                case 3 -> repartir(8);
+                case 4 -> repartir(9);
+                case 5 -> repartir(10);
+                case 6 -> repartir(11);
+                case 7 -> repartir(12);
+            }
+        }
     }
 
     private void realizarTurnosDeJugadores() {
@@ -35,44 +62,19 @@ public class Carioca extends JuegoDeCarta {
         }
     }
 
-    private void bajarJugadores() {
-        if (!esManoDealerBlackjack()) pedirCartasADealer();
-        reiniciarConteoDeJugadores();
-        while (haySiguienteJugador()) {
-            this.siguienteJugador();
-            evaluarManosDeJugadores();
-        }
+    private void reiniciarConteoPartida() {
+        numeroPartida = 1;
     }
 
-    private void evaluarManosDeJugadores() {
-        mostrarResultadosDeJugador();
-        mostrarManoDeDealer();
-        for (Mano mano : obtenerJugadorEnJuego().getManos()) {
-            evaluarManoDeJugador(mano);
-        }
-        obtenerJugadorEnJuego().setApuesta(0);
-        mostrarMontoDeJugador();
+    private void siguientePartida() {
+        numeroPartida = numeroPartida + 1;
     }
 
-    private void evaluarManoDeJugador(Mano mano) {
-        obtenerJugadorEnJuego().setManoEnJuego(mano);
-        mostrarManoDeJugador();
-        mostrarGanadorDeRonda();
-        evaluarApuesta();
+    private boolean haySiguientePartida() {
+        return numeroPartida + 1 < numeroDePartidas;
     }
 
     private void evaluarApuesta() {
-        int apuestaUnitaria = obtenerJugadorEnJuego().getApuesta()
-                / obtenerJugadorEnJuego().getManos().size();
-        if (evaluarManoGanadora().equals(obtenerJugadorEnJuego())) {
-            obtenerJugadorEnJuego().agregarAMonto(apuestaUnitaria);
-            obtenerJugadorEnJuego().agregarAMonto(apuestaUnitaria);
-            System.out.printf("%s acaba de ganar $%s\n",
-                    obtenerJugadorEnJuego().getNombre(), apuestaUnitaria);
-        } else {
-            System.out.printf("%s acaba de perder $%s\n",
-                    obtenerJugadorEnJuego().getNombre(), apuestaUnitaria);
-        }
     }
 
     private void jugarManosDeJugador() {
@@ -80,7 +82,6 @@ public class Carioca extends JuegoDeCarta {
         while (jugadorEstaEnJuego) {
             mostrarTurnoDeJugador();
             var opciones = generarOpciones();
-            mostrarManoDeDealerConCartaEscondida();
             mostrarOpcionesAJugador(opciones);
             int opcionEscogida = Utils.pedirOpcionHasta(opciones.size());
             opciones.get(opcionEscogida)
@@ -125,7 +126,6 @@ public class Carioca extends JuegoDeCarta {
         List<List<Runnable>> opciones = new LinkedList<>();
         agregarOpcionSalida(opciones);
         agregarOpcionesPedirCarta(opciones);
-        agregarOpcionesPartirCarta(opciones);
         agregarOpcionBajarse(opciones);
         return opciones;
     }
@@ -139,77 +139,8 @@ public class Carioca extends JuegoDeCarta {
         return esManoJugadorPartible();
     }
 
-    public Jugador evaluarManoGanadora() {
-        if (esManoDealerBlackjack()) return obtenerDealer();
-        if (esManoJugadorBlackjack()) return obtenerJugadorEnJuego();
-        if (sePasoManoDeDealerDe21()) return obtenerJugadorEnJuego();
-        if (sePasoManoDeJugadorDe21()) return obtenerDealer();
-
-        return obtenerJugadorEnJuego().getManoEnJuego().calcularSumaDeMano() >
-                obtenerDealer().getManoEnJuego().calcularSumaDeMano() ?
-                obtenerJugadorEnJuego() : obtenerDealer();
-    }
-
-    private Boolean esManoDealerBlackjack() {
-        return esManoBlackjack(obtenerDealer().getManoEnJuego());
-    }
-
-    private Boolean esManoJugadorBlackjack() {
-        return esManoBlackjack(obtenerJugadorEnJuego().getManoEnJuego());
-    }
-
-    private Boolean esManoBlackjack(Mano mano) {
-        return mano.esBlackjack();
-    }
-
-    private Boolean sePasoManoDeDealerDe21() {
-        return sePasoManoDe21(obtenerDealer().getManoEnJuego());
-    }
-
-    private Boolean sePasoManoDeJugadorDe21() {
-        return sePasoManoDe21(obtenerJugadorEnJuego().getManoEnJuego());
-    }
-
-    private Boolean sePasoManoDe21(Mano mano) {
-        return mano.sePasoDe21();
-    }
-
-    private void mostrarGanadorDeRonda() {
-        if (evaluarManoGanadora().equals(obtenerJugadorEnJuego())) {
-            System.out.printf("¡¡%s ganó esta mano!! :)))\n\n", obtenerJugadorEnJuego().getNombre());
-        } else {
-            System.out.printf("¡¡%s perdió esta mano!! :(((\n\n", obtenerJugadorEnJuego().getNombre());
-        }
-    }
-
-    private void pedirCartasADealer() {
-        // CPU simple basado en una estrategia simple,
-        // pedir cartas mientras que el total de su mano sea menor a 16
-        while (obtenerDealer().getManoEnJuego().calcularSumaDeMano() < 16) {
-            baraja.pedirCarta(obtenerDealer());
-        }
-    }
-
-    private void mostrarManoDeDealerConCartaEscondida() {
-        System.out.println("La mano del dealer es: ");
-        obtenerDealer().getManoEnJuego().mostrarConCartaEscondida();
-        mostrarManosDeJugador();
-    }
-
-    public Jugador obtenerDealer() {
-        return jugadores.stream()
-                .filter(Jugador::esDealer)
-                .findFirst()
-                .orElseThrow();
-    }
-
     public Jugador obtenerJugadorEnJuego() {
         return jugadores.get(jugadorEnJuego);
-    }
-
-    private void mostrarManoDeDealer() {
-        System.out.println("La mano del dealer es: ");
-        obtenerDealer().getManoEnJuego().mostrarMano();
     }
 
     private void mostrarManoDeJugador() {
@@ -229,18 +160,6 @@ public class Carioca extends JuegoDeCarta {
         }
     }
 
-    private void partirManoDeJugador() {
-        partirManoDeJugador(obtenerJugadorEnJuego().getManos().get(0));
-    }
-
-    private void partirManoDeJugador(Mano mano) {
-        obtenerJugadorEnJuego().setManoEnJuego(mano);
-        int apuestaUnitaria = obtenerJugadorEnJuego().getApuesta()
-                / obtenerJugadorEnJuego().getManos().size();
-        obtenerJugadorEnJuego().apostar(apuestaUnitaria);
-        obtenerJugadorEnJuego().partirMano();
-    }
-
     public void mostrarOpcionesAJugador(List<List<Runnable>> opciones) {
         System.out.println("\nEscriba");
         IntStream.range(1, opciones.size())
@@ -249,46 +168,16 @@ public class Carioca extends JuegoDeCarta {
         System.out.print("> ");
     }
 
-    @Override
-    protected void repartir(Jugador jugador) {
-        baraja.pedirCarta(jugador);
-        baraja.pedirCarta(jugador);
+    private void repartir(int cantidad) {
+        for (int indice = 0; indice < cantidad; indice++) {
+            baraja.pedirCarta(obtenerJugadorEnJuego());
+        }
     }
 
     private void agregarOpcionSalida(List<List<Runnable>> opciones) {
         opciones.add(List.of(
                 () -> System.exit(0),
                 () -> System.out.println("para salir")));
-    }
-
-    private void agregarOpcionesPartirCarta(List<List<Runnable>> opciones) {
-        if (obtenerJugadorEnJuego().getManos().size() == 1) {
-            agregarOpcionPartirCartaSingular(opciones);
-        } else {
-            agregarOpcionPartirCartaMultiple(opciones);
-        }
-    }
-
-    private void agregarOpcionPartirCartaSingular(List<List<Runnable>> opciones) {
-        if (esManoJugadorPartible(obtenerJugadorEnJuego().getManoEnJuego())
-                && obtenerJugadorEnJuego().getMonto() / obtenerJugadorEnJuego().getApuesta() >= 1) {
-            opciones.add(List.of(
-                    this::partirManoDeJugador,
-                    () -> System.out.println("para partir su mano")));
-        }
-    }
-
-    private void agregarOpcionPartirCartaMultiple(List<List<Runnable>> opciones) {
-        int contador = 0;
-        for (Mano mano : obtenerJugadorEnJuego().getManos()) {
-            if (esManoJugadorPartible(mano)) {
-                String opcion = String.format("para partir su %s° mano", contador + 1);
-                opciones.add(List.of(
-                        () -> partirManoDeJugador(mano),
-                        () -> System.out.println(opcion)));
-            }
-            contador++;
-        }
     }
 
     private void agregarOpcionesPedirCarta(List<List<Runnable>> opciones) {

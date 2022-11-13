@@ -1,19 +1,19 @@
 public class Casino {
 
     public void iniciar() {
-        JuegoDeCarta blackjack = Blackjack.crearNuevoJuego();
+        JuegoDeCarta juego = Carioca.crearNuevoJuego();
 
         Jugador jugador1 = Jugador.crearJugador();
         jugador1.agregarAMonto(500);
         jugador1.setNombre("Dumbo");
-        blackjack.agregarJugador(jugador1);
+        juego.agregarJugador(jugador1);
 
         Jugador jugador2 = Jugador.crearJugador();
         jugador2.setNombre("Nicolás");
         jugador2.agregarAMonto(300);
-        blackjack.agregarJugador(jugador2);
+        juego.agregarJugador(jugador2);
 
-        blackjack.jugar();
+        juego.jugar();
     }
 }
 

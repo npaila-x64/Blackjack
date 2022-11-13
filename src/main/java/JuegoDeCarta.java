@@ -4,19 +4,11 @@ public abstract class JuegoDeCarta {
 
     protected Baraja baraja;
     protected List<Jugador> jugadores;
-    protected Integer jugadorEnJuego = 0;
+    protected Integer jugadorEnJuego = -1;
     protected Boolean jugadorEstaEnJuego;
 
     public abstract void jugar();
     public abstract void agregarJugador(Jugador jugador);
-
-    protected void repartirCartas() {
-        for (Jugador jugador : jugadores) {
-            repartir(jugador);
-        }
-    }
-
-    protected abstract void repartir(Jugador jugador);
 
     protected void realizarApuesta() {
         mostrarMontoDeJugador();
@@ -51,7 +43,7 @@ public abstract class JuegoDeCarta {
     }
 
     protected void reiniciarConteoDeJugadores() {
-        jugadorEnJuego = 0;
+        jugadorEnJuego = -1;
     }
 
     protected void siguienteJugador() {

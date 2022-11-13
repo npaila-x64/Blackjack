@@ -47,7 +47,6 @@ public class Carta {
     }
 
     public void setValor(Valor valor) {
-        if (!Valor.fromTipoDeCarta(tipoDeCarta).contains(valor)) throw new NoSuchElementException();
         this.valor = valor;
         this.valorNumerico = valor.getValorNumerico();
     }

@@ -15,7 +15,7 @@ public class BarajaBuilder {
         this.cartas = new ArrayList<>();
     }
 
-    public void crearMazo() {
+    public void agregarMazo() {
         for (Pinta pinta : Pinta.fromTipoDeCarta(tipoDeCarta)) {
             for (Valor valor : Valor.fromTipoDeCarta(tipoDeCarta)) {
                 cartas.add(new Carta(pinta, valor, tipoDeCarta));
