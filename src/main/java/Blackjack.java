@@ -3,8 +3,8 @@ import java.util.stream.IntStream;
 
 public class Blackjack {
 
-    private final Baraja baraja;
-    private final List<Jugador> jugadores;
+    private Baraja baraja;
+    private List<Jugador> jugadores;
     private Integer jugadorEnJuego = 0;
     private Boolean jugadorEstaEnJuego;
 
@@ -91,6 +91,7 @@ public class Blackjack {
         int apuestaUnitaria = obtenerJugadorEnJuego().getApuesta()
                 / obtenerJugadorEnJuego().getManos().size();
         if (evaluarManoGanadora().equals(obtenerJugadorEnJuego())) {
+            obtenerJugadorEnJuego().agregarAMonto(apuestaUnitaria);
             obtenerJugadorEnJuego().agregarAMonto(apuestaUnitaria);
             System.out.printf("%s acaba de ganar $%s\n",
                     obtenerJugadorEnJuego().getNombre(), apuestaUnitaria);
@@ -198,19 +199,39 @@ public class Blackjack {
         return esManoJugadorPartible();
     }
 
-    private boolean esManoDealerBlackjack() {
-        return obtenerDealer().getManoEnJuego().esBlackjack();
-    }
-
     public Jugador evaluarManoGanadora() {
-        if (obtenerDealer().getManoEnJuego().esBlackjack()) return obtenerDealer();
-        if (obtenerJugadorEnJuego().getManoEnJuego().esBlackjack()) return obtenerJugadorEnJuego();
-        if (obtenerDealer().getManoEnJuego().sePasoDe21()) return obtenerJugadorEnJuego();
-        if (obtenerJugadorEnJuego().getManoEnJuego().sePasoDe21()) return obtenerDealer();
+        if (esManoDealerBlackjack()) return obtenerDealer();
+        if (esManoJugadorBlackjack()) return obtenerJugadorEnJuego();
+        if (sePasoManoDeDealerDe21()) return obtenerJugadorEnJuego();
+        if (sePasoManoDeJugadorDe21()) return obtenerDealer();
 
         return obtenerJugadorEnJuego().getManoEnJuego().calcularSumaDeMano() >
                 obtenerDealer().getManoEnJuego().calcularSumaDeMano() ?
                 obtenerJugadorEnJuego() : obtenerDealer();
+    }
+
+    private Boolean esManoDealerBlackjack() {
+        return esManoBlackjack(obtenerDealer().getManoEnJuego());
+    }
+
+    private Boolean esManoJugadorBlackjack() {
+        return esManoBlackjack(obtenerJugadorEnJuego().getManoEnJuego());
+    }
+
+    private Boolean esManoBlackjack(Mano mano) {
+        return mano.esBlackjack();
+    }
+
+    private Boolean sePasoManoDeDealerDe21() {
+        return sePasoManoDe21(obtenerDealer().getManoEnJuego());
+    }
+
+    private Boolean sePasoManoDeJugadorDe21() {
+        return sePasoManoDe21(obtenerJugadorEnJuego().getManoEnJuego());
+    }
+
+    private Boolean sePasoManoDe21(Mano mano) {
+        return mano.sePasoDe21();
     }
 
     private void mostrarGanadorDeRonda() {
@@ -259,7 +280,7 @@ public class Blackjack {
 
     private void mostrarManosDeJugador() {
         if (obtenerJugadorEnJuego().getManos().size() == 1) {
-            System.out.println("\nTu mano es: ");
+            System.out.println("\nSu mano es: ");
             obtenerJugadorEnJuego().getManoEnJuego().mostrarMano();
         } else {
             IntStream.range(0, obtenerJugadorEnJuego().getManos().size())
@@ -274,8 +295,10 @@ public class Blackjack {
 
     private void partirManoDeJugador(Mano mano) {
         obtenerJugadorEnJuego().setManoEnJuego(mano);
+        int apuestaUnitaria = obtenerJugadorEnJuego().getApuesta()
+                / obtenerJugadorEnJuego().getManos().size();
+        obtenerJugadorEnJuego().apostar(apuestaUnitaria);
         obtenerJugadorEnJuego().partirMano();
-        obtenerJugadorEnJuego().apostar(obtenerJugadorEnJuego().getApuesta());
     }
 
     public void mostrarOpcionesAJugador(List<List<Runnable>> opciones) {
@@ -310,7 +333,7 @@ public class Blackjack {
                 && obtenerJugadorEnJuego().getMonto() / obtenerJugadorEnJuego().getApuesta() >= 1) {
             opciones.add(List.of(
                     this::partirManoDeJugador,
-                    () -> System.out.println("para partir tu mano")));
+                    () -> System.out.println("para partir su mano")));
         }
     }
 
@@ -318,7 +341,7 @@ public class Blackjack {
         int contador = 0;
         for (Mano mano : obtenerJugadorEnJuego().getManos()) {
             if (esManoJugadorPartible(mano)) {
-                String opcion = String.format("para partir tu %s° mano", contador + 1);
+                String opcion = String.format("para partir su %s° mano", contador + 1);
                 opciones.add(List.of(
                         () -> partirManoDeJugador(mano),
                         () -> System.out.println(opcion)));
@@ -344,7 +367,7 @@ public class Blackjack {
     private void agregarOpcionPedirCartaMultiple(List<List<Runnable>> opciones) {
         int contador = 0;
         for (Mano mano : obtenerJugadorEnJuego().getManos()) {
-            String opcion = String.format("para pedir carta a tu %s° mano", contador + 1);
+            String opcion = String.format("para pedir carta a su %s° mano", contador + 1);
             obtenerJugadorEnJuego().setManoEnJuego(mano);
             opciones.add(List.of(
                     () -> pedirCartaAManoDeJugador(mano),
