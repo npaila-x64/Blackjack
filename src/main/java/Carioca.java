@@ -10,6 +10,7 @@ public class Carioca extends JuegoDeCarta {
     private List<Jugador> ganadores;
     private Deque<Carta> pilaDeDescartes;
     private Boolean cartaEstaTomada;
+    private Boolean hayGanadorDePartida;
 
     private Carioca(Baraja baraja, List<Jugador> jugadores) {
         this.baraja = baraja;
@@ -33,6 +34,11 @@ public class Carioca extends JuegoDeCarta {
     public void jugar() {
         mostrarTitulo();
         realizarApuestas();
+        realizarPartidas();
+        evaluarApuestas();
+    }
+
+    private void realizarPartidas() {
         reiniciarConteoPartida();
         while (haySiguientePartida()) {
             this.siguientePartida();
@@ -41,7 +47,6 @@ public class Carioca extends JuegoDeCarta {
             pilaDeDescartes.add(getBaraja().pedirCarta());
             realizarTurnosDeJugadores();
         }
-        evaluarApuestas();
     }
 
     private void repartirCartas() {
@@ -61,10 +66,13 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void realizarTurnosDeJugadores() {
-        reiniciarConteoDeJugadores();
-        while (haySiguienteJugador()) {
-            this.siguienteJugador();
-            turnoDeJugador();
+        hayGanadorDePartida = false;
+        while (!hayGanadorDePartida) {
+            reiniciarConteoDeJugadores();
+            while (haySiguienteJugador()) {
+                this.siguienteJugador();
+                turnoDeJugador();
+            }
         }
     }
 
@@ -94,13 +102,17 @@ public class Carioca extends JuegoDeCarta {
             } else {
                 mostrarManoEnumeradaDeJugador();
             }
-            var opciones = generarOpciones();
-            mostrarOpcionesAJugador(opciones);
-            int opcionEscogida = Utils.pedirOpcionHasta(opciones.size());
-            opciones.get(opcionEscogida)
-                    .get(0)
-                    .run();
+            evaluarOpciones();
         }
+    }
+
+    private void evaluarOpciones() {
+        var opciones = generarOpciones();
+        mostrarOpcionesAJugador(opciones);
+        int opcionEscogida = Utils.pedirOpcionHasta(opciones.size() - 1);
+        opciones.get(opcionEscogida)
+                .get(0)
+                .run();
     }
 
     private void mostrarCartaVisible() {
@@ -127,8 +139,14 @@ public class Carioca extends JuegoDeCarta {
         jugadorEstaEnJuego = false;
     }
 
+    private void bajarse() {
+        desenfocarJugador();
+        hayGanadorDePartida = true;
+    }
+
     private void mostrarTurnoDeJugador() {
         System.out.println("+**+");
+        System.out.printf("**** %s° partida\n", numeroPartida);
         System.out.printf("**** Es turno de %s\n", obtenerJugadorEnJuego().getNombre());
         System.out.printf("**** Su monto es de $%s\n", obtenerJugadorEnJuego().getMonto());
         System.out.printf("**** Su apuesta es de $%s\n", obtenerJugadorEnJuego().getApuesta());
@@ -225,7 +243,7 @@ public class Carioca extends JuegoDeCarta {
         // TODO Si existen trios o lo que sea
         if (false) {
             opciones.add(List.of(
-                    this::desenfocarJugador,
+                    this::bajarse,
                     () -> System.out.println("¡BAJARSE!")));
         }
     }

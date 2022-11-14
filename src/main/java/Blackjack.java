@@ -92,7 +92,7 @@ public class Blackjack extends JuegoDeCarta {
             var opciones = generarOpciones();
             mostrarManoDeDealerConCartaEscondida();
             mostrarOpcionesAJugador(opciones);
-            int opcionEscogida = Utils.pedirOpcionHasta(opciones.size());
+            int opcionEscogida = Utils.pedirOpcionHasta(opciones.size() - 1);
             opciones.get(opcionEscogida)
                     .get(0)
                     .run();
