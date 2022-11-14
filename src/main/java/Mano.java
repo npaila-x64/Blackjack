@@ -17,8 +17,17 @@ public class Mano {
         return cartas.get(1);
     }
 
+    public List<Carta> getCartas() {
+        return cartas;
+    }
+
     public void agregarCarta(Carta carta) {
         cartas.add(carta);
+    }
+
+    public Carta removerCarta(Carta carta) {
+        cartas.remove(carta);
+        return carta;
     }
 
     public void mostrarConCartaEscondida() {
@@ -37,8 +46,16 @@ public class Mano {
 
     public void mostrarMano() {
         for (Carta carta : cartas) {
-            System.out.printf("[%s DE %s]%n",
-                    carta.getValor(), carta.getPinta());
+            carta.mostrarCarta();
+        }
+    }
+
+    public void mostrarManoEnumerada() {
+        int contador = 1;
+        for (Carta carta : cartas) {
+            System.out.printf("[%s] ", contador);
+            carta.mostrarCarta();
+            contador++;
         }
     }
 

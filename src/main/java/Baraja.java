@@ -40,6 +40,12 @@ public class Baraja {
         cartas.remove(carta);
     }
 
+    public Carta pedirCarta() {
+        Carta carta = cartas.get(0);
+        cartas.remove(carta);
+        return carta;
+    }
+
     public Integer size() {
         return cartas.size();
     }

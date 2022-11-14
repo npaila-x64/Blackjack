@@ -308,7 +308,7 @@ public class Blackjack extends JuegoDeCarta {
 
     private void agregarOpcionPedirCartaSingular(List<List<Runnable>> opciones) {
         opciones.add(List.of(
-                this::pedirCartaAManoDeJugador,
+                this::pedirCartaDeBaraja,
                 () -> System.out.println("para pedir carta")));
     }
 
@@ -318,7 +318,7 @@ public class Blackjack extends JuegoDeCarta {
             String opcion = String.format("para pedir carta a su %s° mano", contador + 1);
             obtenerJugadorEnJuego().setManoEnJuego(mano);
             opciones.add(List.of(
-                    () -> pedirCartaAManoDeJugador(mano),
+                    () -> pedirCartaDeBaraja(mano),
                     () -> System.out.println(opcion)));
             contador++;
         }

@@ -51,6 +51,10 @@ public class Carta {
         this.valorNumerico = valor.getValorNumerico();
     }
 
+    public void mostrarCarta() {
+        System.out.printf("[%s DE %s]\n", getValor(), getPinta());
+    }
+
     @Override public String toString() {
         return String.format("[Carta: tipoDeCarta=%s, pinta=%s, valor=%s, valorNumerico=%s]",
                 tipoDeCarta, pinta, valor, valorNumerico);

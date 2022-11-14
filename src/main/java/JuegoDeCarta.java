@@ -55,11 +55,11 @@ public abstract class JuegoDeCarta {
         return jugadorEnJuego + 1 < jugadores.size();
     }
 
-    protected void pedirCartaAManoDeJugador() {
+    protected void pedirCartaDeBaraja() {
         baraja.pedirCarta(obtenerJugadorEnJuego());
     }
 
-    protected void pedirCartaAManoDeJugador(Mano mano) {
+    protected void pedirCartaDeBaraja(Mano mano) {
         obtenerJugadorEnJuego().setManoEnJuego(mano);
         baraja.pedirCarta(obtenerJugadorEnJuego());
     }
