@@ -52,7 +52,11 @@ public class Carta {
     }
 
     public void mostrarCarta() {
-        System.out.printf("[%s DE %s]\n", getValor(), getPinta());
+        if (!pinta.equals(Pinta.getJoker(tipoDeCarta))) {
+            System.out.printf("[%s DE %s]\n", getValor(), getPinta());
+        } else {
+            System.out.printf("[%s]\n", getPinta());
+        }
     }
 
     @Override public String toString() {

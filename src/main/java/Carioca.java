@@ -1,3 +1,5 @@
+import enums.Pinta;
+import enums.PintaInglesa;
 import enums.TipoDeCarta;
 
 import java.util.*;
@@ -9,7 +11,7 @@ public class Carioca extends JuegoDeCarta {
     private Integer numeroDePartidas = 1;
     private List<Jugador> ganadores;
     private Deque<Carta> pilaDeDescartes;
-    private Boolean cartaEstaTomada;
+    private Boolean jugadorTieneCartaTomada;
     private Boolean hayGanadorDePartida;
 
     private Carioca(Baraja baraja, List<Jugador> jugadores) {
@@ -50,7 +52,7 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void repartirCartas() {
-        reiniciarConteoDeJugadores();
+        reiniciarRondaDeJugadores();
         while (haySiguienteJugador()) {
             this.siguienteJugador();
             switch (numeroPartida) {
@@ -68,13 +70,47 @@ public class Carioca extends JuegoDeCarta {
     private void realizarTurnosDeJugadores() {
         hayGanadorDePartida = false;
         while (!hayGanadorDePartida) {
-            reiniciarConteoDeJugadores();
-            while (haySiguienteJugador()) {
+            reiniciarRondaDeJugadores();
+            while (haySiguienteJugador() && !hayGanadorDePartida) {
                 this.siguienteJugador();
                 turnoDeJugador();
             }
         }
     }
+
+    public Boolean existeTrios(Integer cantidadDeTrios) {
+        EvaluadorDeCombinaciones evaluador =
+                new EvaluadorDeCombinaciones(obtenerJugadorEnJuego().getManoEnJuego().getCartas());
+        return evaluador.evaluarTrios(cantidadDeTrios);
+    }
+
+//    private Boolean existeEscalas(Integer cantidadDeEscalas) {
+//        int escalasContadas = 0;
+//        List<Carta> cartasContadas = new ArrayList<>();
+//        List<Carta> cartas = new ArrayList<>(obtenerJugadorEnJuego().getManoEnJuego().getCartas());
+//        for (int indice1 = 0; indice1 < cartas.size() - 1; indice1++) {
+//            int contador = 1;
+//            Carta cartaEnAnalisis = cartas.get(indice1);
+//            cartasContadas.add(cartaEnAnalisis);
+//            for (int indice2 = indice1 + 1; indice2 < cartas.size(); indice2++) {
+//                Carta cartaEnComparacion = cartas.get(indice2);
+//                if (cartaEnAnalisis.getValor().equals(cartaEnComparacion.getValor())) {
+//                    contador++;
+//                    cartasContadas.add(cartaEnComparacion);
+//                    if (contador == 3) {
+//                        escalasContadas++;
+//                        for (Carta cartaContada : cartasContadas) {
+//                            cartas.remove(cartaContada);
+//                        }
+//                        indice1 = -1;
+//                        break;
+//                    }
+//                }
+//            }
+//            cartasContadas.clear();
+//        }
+//        return escalasContadas == cantidadDeEscalas;
+//    }
 
     private void reiniciarConteoPartida() {
         numeroPartida = 0;
@@ -93,10 +129,10 @@ public class Carioca extends JuegoDeCarta {
 
     private void turnoDeJugador() {
         enfocarJugador();
-        cartaEstaTomada = false;
+        jugadorTieneCartaTomada = false;
         while (jugadorEstaEnJuego) {
             mostrarTurnoDeJugador();
-            if (!cartaEstaTomada) {
+            if (!jugadorTieneCartaTomada) {
                 mostrarCartaVisible();
                 mostrarManoDeJugador();
             } else {
@@ -131,7 +167,7 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void asignarEstadoCartaTomada() {
-        cartaEstaTomada = true;
+        jugadorTieneCartaTomada = true;
     }
 
     private void devolverCartaAPilaDeDescartes(Carta carta) {
@@ -139,9 +175,26 @@ public class Carioca extends JuegoDeCarta {
         jugadorEstaEnJuego = false;
     }
 
+    private Boolean sePuedeBajarElJugador() {
+        switch (numeroPartida) {
+            case 1 -> {return existeTrios(2);}
+            default -> {return false;}
+        }
+    }
+
     private void bajarse() {
         desenfocarJugador();
         hayGanadorDePartida = true;
+        ganadores.add(obtenerJugadorEnJuego());
+        devolverCartasDeJugadoresAMazo();
+    }
+
+    private void devolverCartasDeJugadoresAMazo() {
+        reiniciarRondaDeJugadores();
+        while (haySiguienteJugador()) {
+            this.siguienteJugador();
+            getBaraja().agregarCartas(obtenerJugadorEnJuego().getManoEnJuego().getCartas());
+        }
     }
 
     private void mostrarTurnoDeJugador() {
@@ -211,7 +264,7 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void agregarOpcionPedirCartaDeMazo(List<List<Runnable>> opciones) {
-        if (!cartaEstaTomada) {
+        if (!jugadorTieneCartaTomada) {
             opciones.add(List.of(
                     this::pedirCartaDeMazo,
                     () -> System.out.println("para tomar una carta del mazo")));
@@ -219,7 +272,7 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void agregarOpcionPedirCartaDePila(List<List<Runnable>> opciones) {
-        if (!cartaEstaTomada) {
+        if (!jugadorTieneCartaTomada) {
             opciones.add(List.of(
                     this::pedirCartaDePilaDeDescartes,
                     () -> System.out.println("para tomar la carta de la pila")));
@@ -227,7 +280,7 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void agregarOpcionDevolverCarta(List<List<Runnable>> opciones) {
-        if (cartaEstaTomada) {
+        if (jugadorTieneCartaTomada && !sePuedeBajarElJugador()) {
             int contador = 0;
             for (Carta carta : obtenerJugadorEnJuego().getManoEnJuego().getCartas()) {
                 String opcion = String.format("para devolver la %s° carta a la pila", contador + 1);
@@ -240,8 +293,7 @@ public class Carioca extends JuegoDeCarta {
     }
 
     private void agregarOpcionBajarse(List<List<Runnable>> opciones) {
-        // TODO Si existen trios o lo que sea
-        if (false) {
+        if (sePuedeBajarElJugador()) {
             opciones.add(List.of(
                     this::bajarse,
                     () -> System.out.println("¡BAJARSE!")));

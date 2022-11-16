@@ -3,17 +3,29 @@ public class Casino {
     public void iniciar() {
         JuegoDeCarta juego = Carioca.crearNuevoJuego();
 
-        Jugador jugador1 = Jugador.crearJugador();
-        jugador1.agregarAMonto(500);
-        jugador1.setNombre("Dumbo");
-        juego.agregarJugador(jugador1);
+        System.out.print("¿Que desea jugar?\n> ");
 
-        Jugador jugador2 = Jugador.crearJugador();
-        jugador2.setNombre("Nicolás");
-        jugador2.agregarAMonto(300);
-        juego.agregarJugador(jugador2);
+        Jugador dumbo = Jugador.crearJugador();
+        dumbo.agregarAMonto(500);
+        dumbo.setNombre("Dumbo");
+        juego.agregarJugador(dumbo);
+
+        Jugador nicolas = Jugador.crearJugador();
+        nicolas.setNombre("Nicolás");
+        nicolas.agregarAMonto(300);
+        juego.agregarJugador(nicolas);
 
         juego.jugar();
     }
+
+
+    private void jugar(JuegoDeCarta juego) {
+
+        if (juego instanceof Blackjack) {
+
+        }
+
+    }
+
 }
 

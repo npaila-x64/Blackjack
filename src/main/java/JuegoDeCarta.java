@@ -34,15 +34,19 @@ public abstract class JuegoDeCarta {
         return jugadores.get(jugadorEnJuego);
     }
 
+    public void setJugadorEnJuego(Jugador jugador) {
+        jugadorEnJuego = jugadores.indexOf(jugador);
+    }
+
     protected void realizarApuestas() {
-        reiniciarConteoDeJugadores();
+        reiniciarRondaDeJugadores();
         while (haySiguienteJugador()) {
             this.siguienteJugador();
             realizarApuesta();
         }
     }
 
-    protected void reiniciarConteoDeJugadores() {
+    protected void reiniciarRondaDeJugadores() {
         jugadorEnJuego = -1;
     }
 

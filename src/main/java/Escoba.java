@@ -1,25 +1,26 @@
 import enums.TipoDeCarta;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class Blackjack extends JuegoDeCarta {
+public class Escoba extends JuegoDeCarta {
 
-    private Blackjack() {}
+    private Escoba() {}
 
-    private Blackjack(Baraja baraja, List<Jugador> jugadores) {
+    private Escoba(Baraja baraja, List<Jugador> jugadores) {
         this.baraja = baraja;
         this.jugadores = jugadores;
     }
 
-    public static Blackjack crearNuevoJuego() {
+    public static Escoba crearNuevoJuego() {
         List<Jugador> jugadores = new LinkedList<>();
         jugadores.add(Jugador.crearDealer());
-        BarajaBuilder barajaBuilder = new BarajaBuilder(TipoDeCarta.INGLESA);
+        BarajaBuilder barajaBuilder = new BarajaBuilder(TipoDeCarta.ESPANOLA);
         barajaBuilder.agregarMazo();
-        Blackjack blackjack = new Blackjack(barajaBuilder.construir(), jugadores);
-        blackjack.getBaraja().barajar();
-        return blackjack;
+        Escoba escoba = new Escoba(barajaBuilder.construir(), jugadores);
+        escoba.getBaraja().barajar();
+        return escoba;
     }
 
     @Override
@@ -117,17 +118,21 @@ public class Blackjack extends JuegoDeCarta {
 
     private void mostrarTitulo() {
         System.out.println(
-               " /$$$$$$$  /$$                     /$$                               /$$      \n" +
-               "| $$__  $$| $$                    | $$                              | $$      \n" +
-               "| $$  \\ $$| $$  /$$$$$$   /$$$$$$$| $$   /$$ /$$  /$$$$$$   /$$$$$$$| $$   /$$\n" +
-               "| $$$$$$$ | $$ |____  $$ /$$_____/| $$  /$$/|__/ |____  $$ /$$_____/| $$  /$$/\n" +
-               "| $$__  $$| $$  /$$$$$$$| $$      | $$$$$$/  /$$  /$$$$$$$| $$      | $$$$$$/ \n" +
-               "| $$  \\ $$| $$ /$$__  $$| $$      | $$_  $$ | $$ /$$__  $$| $$      | $$_  $$ \n" +
-               "| $$$$$$$/| $$|  $$$$$$$|  $$$$$$$| $$ \\  $$| $$|  $$$$$$$|  $$$$$$$| $$ \\  $$\n" +
-               "|_______/ |__/ \\_______/ \\_______/|__/  \\__/| $$ \\_______/ \\_______/|__/  \\__/\n" +
-               "                                       /$$  | $$                              \n" +
-               "                                      |  $$$$$$/                              \n" +
-               "                                       \\______/                              ");
+                "      ..      .        .x+=:.                               ..                \n" +
+                "   x88f` `..x88. .>   z`    ^%                        . uW8\"                  \n" +
+                " :8888   xf`*8888%       .   <k                  u.   `t888                   \n" +
+                ":8888f .888  `\"`       .@8Ned8\"       .    ...ue888b   8888   .         u     \n" +
+                "88888' X8888. >\"8x   .@^%8888\"   .udR88N   888R Y888r  9888.z88N     us888u.  \n" +
+                "88888  ?88888< 888> x88:  `)8b. <888'888k  888R I888>  9888  888E .@88 \"8888\" \n" +
+                "88888   \"88888 \"8%  8888N=*8888 9888 'Y\"   888R I888>  9888  888E 9888  9888  \n" +
+                "88888 '  `8888>      %8\"    R88 9888       888R I888>  9888  888E 9888  9888  \n" +
+                "`8888> %  X88!        @8Wou 9%  9888      u8888cJ888   9888  888E 9888  9888  \n" +
+                " `888X  `~\"\"`   :   .888888P`   ?8888u../  \"*888*P\"   .8888  888\" 9888  9888  \n" +
+                "   \"88k.      .~    `   ^\"F      \"8888P'     'Y\"       `%888*%\"   \"888*\"\"888\" \n" +
+                "     `\"\"*==~~`                     \"P'                    \"`       ^Y\"   ^Y'  \n" +
+                "                                                                              \n" +
+                "                                                                              \n" +
+                "                                                                              ");
     }
 
     private List<List<Runnable>> generarOpciones() {

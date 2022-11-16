@@ -46,6 +46,14 @@ public class Baraja {
         return carta;
     }
 
+    public void agregarCartas(List<Carta> cartas) {
+        this.cartas.addAll(cartas);
+    }
+
+    public TipoDeCarta getTipoDeCarta() {
+        return tipoDeCarta;
+    }
+
     public Integer size() {
         return cartas.size();
     }
