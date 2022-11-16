@@ -58,7 +58,7 @@ public class EvaluadorDeCombinaciones {
         for (Carta distinto : distintos) {
             duplicados.add(0);
             for (Carta carta : cartas) {
-                if (distinto.getValorNumerico().equals(carta.getValorNumerico())) {
+                if (distinto.getValor().equals(carta.getValor())) {
                     duplicados.set(duplicados.size() - 1, duplicados.get(duplicados.size() - 1) + 1);
                 }
             }
